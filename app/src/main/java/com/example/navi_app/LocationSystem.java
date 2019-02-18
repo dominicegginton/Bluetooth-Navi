@@ -8,7 +8,7 @@ public class LocationSystem {
     public ArrayList<Building> buildings;
     public ArrayList<Alert> alerts;
 
-    public Location () {
+    public Location getCurrentLocation() {
         Bluetooth ble = new Bluetooth();
         ArrayList<BLNode> scannedNodes = ble.scan(new ArrayList<Node>());
 
