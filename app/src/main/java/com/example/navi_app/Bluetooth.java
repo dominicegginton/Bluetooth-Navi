@@ -1,42 +1,29 @@
 package com.example.navi_app;
 
-import android.app.Activity;
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
+import android.os.Handler;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import java.util.ArrayList;
 
-public class Bluetooth extends Activity{
+public class Bluetooth extends AppCompatActivity {
     private BluetoothAdapter adapter;
-    private static final int REQUEST_ENABLE_BT = 1;
+    private static final int REQUEST_ENABLE_BT = 99;
+    public final ArrayList<BLNode> scannedNodes = new ArrayList<>();
 
 
     public Bluetooth() {
+
         this.adapter = BluetoothAdapter.getDefaultAdapter();
-    }
-
-
-    private void CheckBlueToothState(){
-        if (this.adapter == null) {
-            Log.e("BLE","Bluetooth is not supported on the current device :(");
-        }
-        else {
-            if (this.adapter.isEnabled()){
-                if(this.adapter.isDiscovering()){
-                    Log.i("BLE","Bluetooth is currently in device discovery process.");
-                }else{
-                    Log.i("BLE","Bluetooth is Enabled.");
-                }
-            }else{
-                Log.e("BLE","Bluetooth is NOT Enabled!");
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
-        }
     }
 
     @Override
@@ -48,58 +35,75 @@ public class Bluetooth extends Activity{
         {
             if (resultCode == 0)
             {
-                Log.e("BLE","User did not allowed bluetooth acces");
+                Log.e("BLE","User did not allowed bluetooth access");
             }
             else
-                Log.i("BLE","User allowed bluetooth acces");
+                Log.i("BLE","User allowed bluetooth access");
         }
     }
 
-    public ArrayList<BLNode> scan(ArrayList<Node> filterNodes)
-    {
-        final ArrayList<BLNode> scannedNodes = new ArrayList<BLNode>();
+    public void enableBluetooth() {
+        if (this.adapter == null) {
+            Log.e("BLE", "Sorry this device does not support bluetooth :(");
+            finish();
+        }
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 99);
+        }
+        if (!this.adapter.isEnabled()) {
+            Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBluetoothIntent, REQUEST_ENABLE_BT);
+        }
+    }
 
-        // start looking for bluetooth devices
-        adapter.startDiscovery();
 
-        // Discover new devices
-        // Create a BroadcastReceiver for ACTION_FOUND
-        final BroadcastReceiver mReceiver = new BroadcastReceiver()
-        {
+    public void scan() {
+
+        final ArrayList<BLNode> scannedNodes = new ArrayList<>();
+
+        BroadcastReceiver mReceiver = new BroadcastReceiver() {
             @Override
-            public void onReceive(Context context, Intent intent)
-            {
+            public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
-                // When discovery finds a device
-                if (BluetoothDevice.ACTION_FOUND.equals(action))
-                {
-                    // Get the bluetoothDevice object from the Intent
+                if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                    // Discovery has found a device. Get the BluetoothDevice
+                    // object and its info from the Intent.
                     BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-                    // Get the “RSSI” to get the signal strength as integer,
-                    // but should be displayed in “dBm” units
+                    String deviceName = device.getName();
+                    String deviceHardwareAddress = device.getAddress();
                     int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
 
-                    // Create the device object and add it to the arrayList of devices
-                    BLNode bluetoothObject = new BLNode(device.getAddress(), rssi);
-
+                    BLNode bluetoothObject = new BLNode(deviceHardwareAddress, deviceName, rssi);
                     scannedNodes.add(bluetoothObject);
+                    String output = String.valueOf(bluetoothObject.address + " - "+ bluetoothObject.name +" - " + bluetoothObject.rssi);
+                    Log.i("BLNode", output);
                 }
+
+                else {Log.i("Action", action);}
             }
         };
-        // Register the BroadcastReceiver
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        filter.addAction(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         registerReceiver(mReceiver, filter);
-        if (filterNodes.size() > 0) {
-            ArrayList<BLNode> nodes = new ArrayList<BLNode>();
-            for (BLNode node : scannedNodes) {
-                if (filterNodes.contains(node)) {
-                    nodes.add(node);
-                }
-            }
-            return nodes;
-        } else {
-            return scannedNodes;
+
+        if (this.adapter.isDiscovering()) {
+            this.adapter.cancelDiscovery();
         }
+        if (scannedNodes.size() > 0) {
+            scannedNodes.clear();
+        }
+        this.adapter.startDiscovery();
+
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                adapter.cancelDiscovery();
+            }
+        }, 6000);
+
     }
 }

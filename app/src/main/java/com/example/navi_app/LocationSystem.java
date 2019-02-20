@@ -8,18 +8,22 @@ public class LocationSystem {
     public ArrayList<Building> buildings;
     public ArrayList<Alert> alerts;
 
+    /**
+     * Returns Location object bacesed on the users location.
+     * @return      the location object of where the users is in
+     */
     public Location getCurrentLocation() {
         Bluetooth ble = new Bluetooth();
-        ArrayList<BLNode> scannedNodes = ble.scan(new ArrayList<Node>());
+        ble.scan();
 
-        if (scannedNodes.size() != 0) {
+        if (ble.scannedNodes.size() != 0) {
 
             for (Building building : buildings) {
                 for (Level level : building.Levels) {
                     for (Location location : level.locations) {
                         for (Node node : location.nodes) {
 
-                            if (node.address == scannedNodes.get(0).address) {
+                            if (node.address == ble.scannedNodes.get(0).address) {
                                 return location;
                             }
                         }
