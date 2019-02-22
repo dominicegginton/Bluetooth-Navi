@@ -20,7 +20,7 @@ private final ArrayList<BLNode> scannedNodes = new ArrayList<>();
 
 The locationSystem class is already initialized (Currently only 2 rooms arr added). Just call `.getCurrentLocation()` on the `locationSystem` class to return a `Location` object.
 
-```
+``` java
 Location currentLocation = this.ls.getCurrentLocation(this.scannedNodes);
 ```
 
