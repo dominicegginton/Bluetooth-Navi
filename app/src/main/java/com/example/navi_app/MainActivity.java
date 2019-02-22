@@ -30,31 +30,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private final ArrayList<BLNode> scannedNodes = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstanceState) {
+        // Normal Android Stuff
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // Check For 'ACCESS_COARSE_LOCATION' permission and request on runtime
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 99);
         }
 
 
-        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
-        Log.i("perm", String.valueOf(permissionCheck));
-
-        //UI
+        // INIT GUI
         btn_scan = (Button) findViewById(R.id.btn_scan);
         btn_scan.setOnClickListener(this);
 
+        // INIT Bluetooth
         this.adapter = BluetoothAdapter.getDefaultAdapter();
-
         IntentFilter filter = new IntentFilter();
         filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         registerReceiver(mReceiver, filter);
-
         enableBluetooth();
-
         scan();
     }
 
