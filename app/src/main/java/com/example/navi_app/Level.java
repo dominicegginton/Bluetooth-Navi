@@ -6,4 +6,8 @@ public class Level {
 
     public String name;
     public ArrayList<Location> locations;
+
+    public Level() {
+        this.locations = new ArrayList<>();
+    }
 }

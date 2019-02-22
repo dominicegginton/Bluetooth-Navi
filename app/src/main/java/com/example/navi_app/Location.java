@@ -6,4 +6,8 @@ public class Location {
 
     public String name;
     public ArrayList<Node> nodes;
+
+    public Location() {
+        this.nodes = new ArrayList<>();
+    }
 }
