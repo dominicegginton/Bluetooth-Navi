@@ -76,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
         Node node01 = new Node();
         node01.address = "3C:2E:FF:43:E3:A7";
         Node node02 = new Node();
-        node02.address = "94:65:2D:DE:19:45 ";
+        node02.address = "C0:D0:12:6D:03:29";
 
         reception.nodes.add(node01);
         room01.nodes.add(node02);
@@ -156,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
     public void btn_getLocation_Clicked(View view) {
         Location currentLocation = this.ls.getCurrentLocation(this.scannedNodes);
         if (currentLocation != null) {
+            text_location.setText(currentLocation.name);
             String output = currentLocation.name + " -- Nodes: {";
             for (Node node: currentLocation.nodes) {
                 output += ", " + node.address;
@@ -163,8 +164,7 @@ public class MainActivity extends AppCompatActivity {
             output += "}";
             Log.i("Location", output);
         }
-        Log.i("Location", "Null :(");
-        //this.text_location.setText(currentLocation.name);
+        this.text_location.setText(currentLocation.name);
     }
 }
 
