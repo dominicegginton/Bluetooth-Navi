@@ -74,9 +74,9 @@ public class MainActivity extends AppCompatActivity {
         room01.name = "Room 1";
 
         Node node01 = new Node();
-        node01.address = "64:A2:F9:6D:8B:8D";
+        node01.address = "3C:2E:FF:43:E3:A7";
         Node node02 = new Node();
-        node02.address = "C8:21:58:B0:17:5F ";
+        node02.address = "94:65:2D:DE:19:45 ";
 
         reception.nodes.add(node01);
         room01.nodes.add(node02);

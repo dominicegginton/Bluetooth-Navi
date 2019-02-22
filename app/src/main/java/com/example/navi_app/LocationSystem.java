@@ -18,47 +18,42 @@ public class LocationSystem {
      * @return      the location object of where the users is in
      */
     public Location getCurrentLocation(ArrayList<BLNode> scannedNodes) {
-        Log.i("Nodes", String.valueOf(scannedNodes.size()));
+
+        // Filter scannedNodes
 
         if (scannedNodes.size() != 0) {
-            ArrayList<BLNode> removalList = new ArrayList<>();
+            ArrayList<BLNode> systemNodes = new ArrayList<>();
 
             for (BLNode scannedNode: scannedNodes) {
                 for (Building building : this.buildings) {
                     for (Level level : building.levels) {
                         for (Location location : level.locations) {
                             for (Node node : location.nodes) {
-                                if (scannedNode.address != node.address ) {
-                                    // add to removal list
-                                    if (!removalList.contains(scannedNode)) {
-                                        removalList.add(scannedNode);
-                                    }
+                                if (scannedNode.address.equals(node.address)) {
+                                    systemNodes.add(scannedNode);
                                 }
                             }
                         }
                     }
                 }
             }
-            Log.i("Nodes to Remove", String.valueOf(removalList.size()));
-            for (BLNode nodeToRemove: removalList) {
-                scannedNodes.remove(nodeToRemove);
-            }
-            Log.i("Nodes", String.valueOf(scannedNodes.size()));
+
             // Sort BLNodes
 
-            BLNode closestNode = new BLNode("aaaaa", "test", -10000);
-            for (BLNode node: scannedNodes) {
-                if (node.rssi < closestNode.rssi) {
+            BLNode closestNode = new BLNode("", "", -10000);
+            for (BLNode node: systemNodes) {
+                if (node.rssi.intValue() > closestNode.rssi.intValue()) {
                     closestNode = node;
                 }
             }
-
             Log.i("closestNode", String.valueOf(closestNode.address));
+
+            // Return Location Object
             for (Building building : buildings) {
                 for (Level level : building.levels) {
                     for (Location location : level.locations) {
                         for (Node node : location.nodes) {
-                            if (node.address == closestNode.address) {
+                            if (node.address.equals(closestNode.address)) {
                                 return location;
                             }
                         }

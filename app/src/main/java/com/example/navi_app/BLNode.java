@@ -4,9 +4,9 @@ public class BLNode implements Comparable<Node>{
 
     public String address;
     public String name;
-    public int rssi;
+    public Integer rssi;
 
-    BLNode(String Nodeadrress, String name, int rssi) {
+    BLNode(String Nodeadrress, String name, Integer rssi) {
         this.address = Nodeadrress;
         this.name = name;
         this.rssi = rssi;
