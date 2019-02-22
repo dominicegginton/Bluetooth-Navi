@@ -16,17 +16,20 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
 
     //UI
     Button btn_scan;
+    Button btn_getLocation;
+    TextView text_location;
 
     private BluetoothAdapter adapter;
     private static final int REQUEST_ENABLE_BT = 99;
-    private LocationSystem locationSystem;
+    private LocationSystem ls;
     private final ArrayList<BLNode> scannedNodes = new ArrayList<>();
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         // INIT GUI
         btn_scan = (Button) findViewById(R.id.btn_scan);
-        btn_scan.setOnClickListener(this);
+        btn_getLocation = (Button) findViewById(R.id.btn_getLocation);
+        text_location = (TextView) findViewById(R.id.tex_location);
 
         // INIT Bluetooth
         this.adapter = BluetoothAdapter.getDefaultAdapter();
@@ -53,6 +57,34 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         registerReceiver(mReceiver, filter);
         enableBluetooth();
         scan();
+
+        // INIT LocationSystem
+        this.ls = new LocationSystem();
+        this.ls.name = "Coventry Uni";
+
+        Building building1 = new Building();
+        building1.name = "Engineering & Computing";
+
+        Level ground = new Level();
+        ground.name = "Ground";
+
+        Location reception = new Location();
+        reception.name = "Reception";
+        Location room01 = new Location();
+        room01.name = "Room 1";
+
+        Node node01 = new Node();
+        node01.address = "64:A2:F9:6D:8B:8D";
+        Node node02 = new Node();
+        node02.address = "C8:21:58:B0:17:5F ";
+
+        reception.nodes.add(node01);
+        room01.nodes.add(node02);
+        ground.locations.add(reception);
+        ground.locations.add(room01);
+        building1.levels.add(ground);
+        this.ls.buildings.add(building1);
+
     }
 
 
@@ -117,8 +149,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }, 6000);
     }
 
-    public void onClick(View view) {
+    public void btn_scan_Clickec(View view) {
         scan();
+    }
+
+    public void btn_getLocation_Clicked(View view) {
+        Location currentLocation = this.ls.getCurrentLocation(this.scannedNodes);
+        if (currentLocation != null) {
+            String output = currentLocation.name + " -- Nodes: {";
+            for (Node node: currentLocation.nodes) {
+                output += ", " + node.address;
+            }
+            output += "}";
+            Log.i("Location", output);
+        }
+        Log.i("Location", "Null :(");
+        //this.text_location.setText(currentLocation.name);
     }
 }
 
