@@ -42,11 +42,11 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 99);
         }
 
-
+        scannedNodes.add(new BLNode("","", 0));
         // INIT GUI
         btn_scan = (Button) findViewById(R.id.btn_scan);
         btn_getLocation = (Button) findViewById(R.id.btn_getLocation);
-        text_location = (TextView) findViewById(R.id.tex_location);
+        text_location = (TextView) findViewById(R.id.txt_location);
 
         // INIT Bluetooth
         this.adapter = BluetoothAdapter.getDefaultAdapter();
@@ -68,20 +68,20 @@ public class MainActivity extends AppCompatActivity {
         Level ground = new Level();
         ground.name = "Ground";
 
-        Location reception = new Location();
-        reception.name = "Reception";
-        Location room01 = new Location();
-        room01.name = "Room 1";
-
+        Location roomECG01 = new Location();
+        roomECG01.name = "Demo Room - Macbook";
         Node node01 = new Node();
-        node01.address = "3C:2E:FF:43:E3:A7";
-        Node node02 = new Node();
-        node02.address = "C0:D0:12:6D:03:29";
+        node01.address = "D0:A6:37:E9:A2:62";
+        roomECG01.nodes.add(node01);
 
-        reception.nodes.add(node01);
-        room01.nodes.add(node02);
-        ground.locations.add(reception);
-        ground.locations.add(room01);
+        Location roomECG02 = new Location();
+        roomECG02.name = "Demo Room - Random Person Phone";
+        Node node02 = new Node();
+        node02.address = "38:A4:ED:94:BA:E7";
+        roomECG02.nodes.add(node02);
+
+        ground.locations.add(roomECG01);
+        ground.locations.add(roomECG02);
         building1.levels.add(ground);
         this.ls.buildings.add(building1);
 
@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
                 BLNode bluetoothObject = new BLNode(deviceHardwareAddress, deviceName, rssi);
                 scannedNodes.add(bluetoothObject);
-                String output = String.valueOf(bluetoothObject.address + " - "+ bluetoothObject.name +" - " + bluetoothObject.rssi);
+                String output = String.valueOf(bluetoothObject.address + " : "+ bluetoothObject.name +" : " + bluetoothObject.rssi);
                 Log.i("BLNode", output);
             }
 
@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 adapter.cancelDiscovery();
             }
-        }, 6000);
+        }, 10000);
     }
 
     public void btn_scan_Clickec(View view) {
@@ -159,12 +159,13 @@ public class MainActivity extends AppCompatActivity {
             text_location.setText(currentLocation.name);
             String output = currentLocation.name + " -- Nodes: {";
             for (Node node: currentLocation.nodes) {
-                output += ", " + node.address;
+                output += " " + node.address;
             }
-            output += "}";
+            output += " }";
             Log.i("Location", output);
         }
         this.text_location.setText(currentLocation.name);
+
     }
 }
 
