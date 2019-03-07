@@ -6,6 +6,7 @@ public class Location {
 
     public String name;
     public ArrayList<Node> nodes;
+    public int computersAvadiable;
 
     public Location() {
         this.nodes = new ArrayList<>();
