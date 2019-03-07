@@ -227,7 +227,9 @@ public class MainActivity extends AppCompatActivity {
                 if (currentLocation != null) {
 
                     // Output location details to UI
-                    text_location.setText(currentLocation.name);
+                    buildingTxt.setText(ls.getCurrentBuilding(currentLocation).name);
+                    levelTxt.setText(ls.getCurrentBuilding(currentLocation).name);
+                    locationTxt.setText(currentLocation.name);
 
                     // Log Nodes that belong to the location
                     String output = currentLocation.name + " -- Nodes: {";
@@ -236,10 +238,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                     output += " }";
                     Log.i("Location", output);
-                    text_location.setText(currentLocation.name);
-                    text_location.setVisibility(View.VISIBLE);
                 }
-                spinner.setVisibility(View.GONE);
+                getLocationSpinner.setVisibility(View.GONE);
             }
         }, 10000);
 
