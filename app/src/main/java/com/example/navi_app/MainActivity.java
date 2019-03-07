@@ -27,8 +27,10 @@ public class MainActivity extends AppCompatActivity {
 
     //UI
     Button btn_getLocation;
-    TextView text_location;
-    ProgressBar spinner;
+    TextView locationTxt;
+    TextView buildingTxt;
+    TextView levelTxt;
+    ProgressBar getLocationPpinner;
 
     //Bluetooth Objects
     private BluetoothAdapter adapter;
@@ -53,10 +55,11 @@ public class MainActivity extends AppCompatActivity {
 
         // INIT UI
         btn_getLocation = (Button) findViewById(R.id.btn_getLocation);
-        text_location = (TextView) findViewById(R.id.txt_location);
-        text_location.setVisibility(View.GONE);
-        spinner = (ProgressBar)findViewById(R.id.progressBar);
-        spinner.setVisibility(View.GONE);
+        buildingTxt = (TextView) findViewById(R.id.buildingTxt);
+        levelTxt = (TextView) findViewById(R.id.levelTxt);
+        locationTxt = (TextView) findViewById(R.id.locationTxt);
+        getLocationPpinner = (ProgressBar)findViewById(R.id.getLocationPpinner);
+        getLocationPpinner.setVisibility(View.GONE);
 
         // INIT Bluetooth
         this.adapter = BluetoothAdapter.getDefaultAdapter();

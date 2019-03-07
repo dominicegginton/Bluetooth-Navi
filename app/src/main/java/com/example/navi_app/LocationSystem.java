@@ -100,7 +100,7 @@ public class LocationSystem {
 
     public Building getCurrentBuilding(Location currentLocation) {
 
-        // Seach for the building using location object
+        // Search for the building using location object
         for (Building building : buildings) {
             for (Level level : building.levels) {
                 for (Location location : level.locations) {
