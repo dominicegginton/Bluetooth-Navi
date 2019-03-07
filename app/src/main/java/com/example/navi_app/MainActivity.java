@@ -155,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btn_getLocation_Clicked(View view) {
+        text_location.setVisibility(View.GONE);
         spinner.setVisibility(View.VISIBLE);
 
         scan();
@@ -164,15 +165,20 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 Location currentLocation = ls.getCurrentLocation(scannedNodes);
                 if (currentLocation != null) {
+
+                    // Output Location Name
                     text_location.setText(currentLocation.name);
+
+                    // Log Nodes that belong to the location
                     String output = currentLocation.name + " -- Nodes: {";
                     for (Node node: currentLocation.nodes) {
                         output += " " + node.address;
                     }
                     output += " }";
                     Log.i("Location", output);
+                    text_location.setText(currentLocation.name);
+                    text_location.setVisibility(View.VISIBLE);
                 }
-                text_location.setText(currentLocation.name);
                 spinner.setVisibility(View.GONE);
             }
         }, 10000);

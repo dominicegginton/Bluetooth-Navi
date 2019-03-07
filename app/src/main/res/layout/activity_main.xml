@@ -51,12 +51,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_getLocation" />
 
-    <CheckedTextView
-        android:id="@+id/checkedTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:checked="true"
-        android:text="CheckedTextView"
-        tools:layout_editor_absoluteX="99dp"
-        tools:layout_editor_absoluteY="455dp" />
 </android.support.constraint.ConstraintLayout>

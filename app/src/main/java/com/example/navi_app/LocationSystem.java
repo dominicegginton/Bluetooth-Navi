@@ -68,4 +68,31 @@ public class LocationSystem {
         }
         return null;
     }
+
+    public Level getCurrentLevel(Location currentLocation){
+        // Return Location Object
+        for (Building building : buildings) {
+            for (Level level : building.levels) {
+                for (Location location : level.locations) {
+                    if (location == currentLocation) {
+                        return level;
+                    }
+                }
+            }
+        }
+        return null;
+    };
+
+    public Building getCurrentBuilding(Location currentLocation) {
+        for (Building building : buildings) {
+            for (Level level : building.levels) {
+                for (Location location : level.locations) {
+                    if (location == currentLocation) {
+                        return building;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 }
