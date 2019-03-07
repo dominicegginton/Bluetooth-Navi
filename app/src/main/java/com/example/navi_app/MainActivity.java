@@ -1,10 +1,12 @@
 package com.example.navi_app;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -28,17 +30,20 @@ public class MainActivity extends AppCompatActivity {
     TextView text_location;
     ProgressBar spinner;
 
+    //Bluetooth Objects
     private BluetoothAdapter adapter;
     private static final int REQUEST_ENABLE_BT = 99;
-    private LocationSystem ls;
     private final ArrayList<BLNode> scannedNodes = new ArrayList<>();
+
+    //Location System Objects
+    private LocationSystem ls;
 
     protected void onCreate(Bundle savedInstanceState) {
         // Normal Android Stuff
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Check For 'ACCESS_COARSE_LOCATION' permission and request on runtime
+        // Check For 'ACCESS_COARSE_LOCATION' permission and request on runtime this is needed for bluetooth scanning
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 99);
         }
@@ -46,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         // Init scanned nodes
         scannedNodes.add(new BLNode("","", 0));
 
-        // INIT GUI
+        // INIT UI
         btn_getLocation = (Button) findViewById(R.id.btn_getLocation);
         text_location = (TextView) findViewById(R.id.txt_location);
         text_location.setVisibility(View.GONE);
@@ -61,7 +66,6 @@ public class MainActivity extends AppCompatActivity {
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         registerReceiver(mReceiver, filter);
         enableBluetooth();
-        scan();
 
         // INIT LocationSystem
         this.ls = new LocationSystem();
@@ -94,42 +98,83 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void enableBluetooth() {
+
+        // This there is no bluetooth adapter
         if (this.adapter == null) {
-            Log.e("BLE", "Sorry this device does not support bluetooth :(");
-            finish();
+            // Log error
+            Log.e("Bluetooth", "Sorry this device does not support bluetooth :(");
+
+            // Create Alert Dialog
+            AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+            alertDialog.setTitle("Bluetooth not supported");
+            alertDialog.setMessage("Sorry your device doesn't support bluetooth");
+            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Exit App", new DialogInterface.OnClickListener() {
+
+                // Exit button on click event
+                public void onClick(DialogInterface dialog, int which) {
+                    // Exit this dialog
+                    dialog.dismiss();
+                    // Exit App
+                    System.exit(1);
+                }
+
+            });
+            // Show Alert Dialog
+            alertDialog.show();
         }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 99);
-        }
-        if (!this.adapter.isEnabled()) {
-            Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBluetoothIntent, REQUEST_ENABLE_BT);
+        else {
+            // Check for 'ACCESS_COARSE_LOCATION' permission and request on runtime this is needed for bluetooth scanning
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                // Request permission for 'ACCESS_COARSE_LOCATION'
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 99);
+            }
+
+            // Check is bluetooth adapter is already enabled
+            if (!this.adapter.isEnabled()) {
+                // Create new intent to enable bluetooth
+                Intent enableBluetoothIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                // Start intent in current activity
+                startActivityForResult(enableBluetoothIntent, REQUEST_ENABLE_BT);
+            }
         }
     }
 
     @Override
     protected void onResume(){
         super.onResume();
+
+        // Enable bluetooth
         enableBluetooth();
     }
 
+    // Define new BroadcastReceiver
     BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+
+            // Get the received action
             String action = intent.getAction();
+
+            // If action is equal to the bluetooth device found action
             if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // Discovery has found a device. Get the BluetoothDevice
-                // object and its info from the Intent.
+                // Found bluetooth node
+
+                // Create new BluetoothDevice object from intent and get device info
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 String deviceName = device.getName();
                 String deviceHardwareAddress = device.getAddress();
                 int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
                 BLNode bluetoothObject = new BLNode(deviceHardwareAddress, deviceName, rssi);
+
+                // Add node to list on scanned nodes
                 scannedNodes.add(bluetoothObject);
+
+                // Log node has been found
                 String output = String.valueOf(bluetoothObject.address + " : "+ bluetoothObject.name +" : " + bluetoothObject.rssi);
                 Log.i("BLNode", output);
             }
 
+            // Log action
             else {Log.i("Action", action);}
         }
     };
@@ -137,20 +182,26 @@ public class MainActivity extends AppCompatActivity {
 
     private void scan() {
 
+        // If adapter is already discovering cancel the discovery
         if (this.adapter.isDiscovering()) {
             this.adapter.cancelDiscovery();
         }
-        if (scannedNodes.size() > 0) {
-            scannedNodes.clear();
-        }
+
+        // Clear scanned nodes list
+        scannedNodes.clear();
+
+        // Start discovery on adapter
         this.adapter.startDiscovery();
 
+        // Create new delay handler of 10 seconds
+        Handler cancelDiscoveryHandler = new Handler();
+        cancelDiscoveryHandler.postDelayed(new Runnable() {
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
             public void run() {
+                // cancel the discovery on the adapter
                 adapter.cancelDiscovery();
             }
+
         }, 10000);
     }
 
@@ -158,15 +209,22 @@ public class MainActivity extends AppCompatActivity {
         text_location.setVisibility(View.GONE);
         spinner.setVisibility(View.VISIBLE);
 
+
+        // Scan
         scan();
 
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
+        // Create new delay handler of 10 seconds
+        Handler getCurrentLocationHandler = new Handler();
+        getCurrentLocationHandler.postDelayed(new Runnable() {
+
             public void run() {
+                // Get current location object
                 Location currentLocation = ls.getCurrentLocation(scannedNodes);
+
+                // Check for null location
                 if (currentLocation != null) {
 
-                    // Output Location Name
+                    // Output location details to UI
                     text_location.setText(currentLocation.name);
 
                     // Log Nodes that belong to the location
