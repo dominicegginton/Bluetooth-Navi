@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         buildingTxt = (TextView) findViewById(R.id.buildingTxt);
         levelTxt = (TextView) findViewById(R.id.levelTxt);
         locationTxt = (TextView) findViewById(R.id.locationTxt);
-        getLocationSpinner = (ProgressBar)findViewById(R.id.getLocationPpinner);
+        getLocationSpinner = (ProgressBar)findViewById(R.id.getLocationSpinner);
         getLocationSpinner.setVisibility(View.GONE);
 
         // INIT Bluetooth
