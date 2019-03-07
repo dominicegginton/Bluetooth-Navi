@@ -16,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,9 +24,9 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     //UI
-    Button btn_scan;
     Button btn_getLocation;
     TextView text_location;
+    ProgressBar spinner;
 
     private BluetoothAdapter adapter;
     private static final int REQUEST_ENABLE_BT = 99;
@@ -42,11 +43,15 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, 99);
         }
 
+        // Init scanned nodes
         scannedNodes.add(new BLNode("","", 0));
+
         // INIT GUI
-        btn_scan = (Button) findViewById(R.id.btn_scan);
         btn_getLocation = (Button) findViewById(R.id.btn_getLocation);
         text_location = (TextView) findViewById(R.id.txt_location);
+        text_location.setVisibility(View.GONE);
+        spinner = (ProgressBar)findViewById(R.id.progressBar);
+        spinner.setVisibility(View.GONE);
 
         // INIT Bluetooth
         this.adapter = BluetoothAdapter.getDefaultAdapter();
@@ -149,22 +154,28 @@ public class MainActivity extends AppCompatActivity {
         }, 10000);
     }
 
-    public void btn_scan_Clickec(View view) {
-        scan();
-    }
-
     public void btn_getLocation_Clicked(View view) {
-        Location currentLocation = this.ls.getCurrentLocation(this.scannedNodes);
-        if (currentLocation != null) {
-            text_location.setText(currentLocation.name);
-            String output = currentLocation.name + " -- Nodes: {";
-            for (Node node: currentLocation.nodes) {
-                output += " " + node.address;
+        spinner.setVisibility(View.VISIBLE);
+
+        scan();
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                Location currentLocation = ls.getCurrentLocation(scannedNodes);
+                if (currentLocation != null) {
+                    text_location.setText(currentLocation.name);
+                    String output = currentLocation.name + " -- Nodes: {";
+                    for (Node node: currentLocation.nodes) {
+                        output += " " + node.address;
+                    }
+                    output += " }";
+                    Log.i("Location", output);
+                }
+                text_location.setText(currentLocation.name);
+                spinner.setVisibility(View.GONE);
             }
-            output += " }";
-            Log.i("Location", output);
-        }
-        this.text_location.setText(currentLocation.name);
+        }, 10000);
 
     }
 }
