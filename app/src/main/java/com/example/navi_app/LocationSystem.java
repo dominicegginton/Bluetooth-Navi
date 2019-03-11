@@ -189,7 +189,7 @@ public class LocationSystem {
                 for (Location location : level.locations) {
                     for (Node node: location.nodes) {
 
-                        // If node is the same as search address
+                        // If node is the same as search node object
                         if (node.equals(searchNode)) {
                             return location;
                         }
@@ -207,6 +207,7 @@ public class LocationSystem {
             for (Level level : building.levels) {
                 for (Location location : level.locations) {
 
+                    // If location name is equal to search string
                     if(location.name.equals(searchString)) {
                         return location;
                     }
@@ -218,30 +219,45 @@ public class LocationSystem {
     }
 
     public Path navigate(Location originLocation, Location destinationLocation){
+
+        // Get root nodes for both origin and destination - first nodes in array
         Node originRootNode = originLocation.nodes.get(0);
         Node destinationRootNode = destinationLocation.nodes.get(0);
+        // Define new asrraylist for stack and visited
         ArrayList<Path> stack = new ArrayList<>();
         ArrayList<Node> visited = new ArrayList<>();
 
+        // Add new Path to originRootnNode to the stack
         stack.add(new Path(originRootNode, this));
 
+
+        // While the stack is empty
         while (!stack.isEmpty()) {
 
+            // Get smallest path from stack
             Path smallestPath = stack.remove(0);
+
+            // For each connection from destination of smallest path
             for (Connection connection: smallestPath.destination.connections){
 
+                // If we haven not visited this node before
                 if (!visited.contains(connection.getNeighbor())){
+                    // Add new Path to this connection destination
                     stack.add(new Path(connection, smallestPath, this));
                     Collections.sort(stack);
                 }
             }
 
+            // Add this destination to visited
             visited.add(smallestPath.destination);
 
+            // The smallest path has reached the destination root node return the path
             if (smallestPath.destination == destinationRootNode) {
                 return smallestPath;
             }
         }
+
+        // Can not find path to node
         return null;
     }
 }
