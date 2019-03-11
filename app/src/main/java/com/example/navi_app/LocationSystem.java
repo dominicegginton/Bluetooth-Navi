@@ -55,7 +55,6 @@ public class LocationSystem {
             e.printStackTrace();
         }
 
-        Log.i(TAG, lsname);
     }
 
     /**
@@ -101,7 +100,6 @@ public class LocationSystem {
 
             }
             String output = String.valueOf(closestNode.name + " : " + closestNode.address + " : " + closestNode.rssi );
-            Log.i("BLNode Cloest", output);
 
             // Return the location object that the closest node belongs to
             for (Building building : buildings) {
@@ -182,13 +180,32 @@ public class LocationSystem {
         return null;
     }
 
+    public Location getLocation(Node searchNode) {
+        // Search for the building using location object
+        for (Building building : buildings) {
+            for (Level level : building.levels) {
+                for (Location location : level.locations) {
+                    for (Node node: location.nodes) {
+
+                        // If node is the same as search address
+                        if (node.equals(searchNode)) {
+                            return location;
+                        }
+
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public Path navigate(Location originLocation, Location destinationLocation){
         Node originRootNode = originLocation.nodes.get(0);
         Node destinationRootNode = destinationLocation.nodes.get(0);
         ArrayList<Path> stack = new ArrayList<>();
         ArrayList<Node> visited = new ArrayList<>();
 
-        stack.add(new Path(originRootNode));
+        stack.add(new Path(originRootNode, this));
 
         while (!stack.isEmpty()) {
 
@@ -196,7 +213,7 @@ public class LocationSystem {
             for (Connection connection: smallestPath.destination.connections){
 
                 if (!visited.contains(connection.getNeighbor())){
-                    stack.add(new Path(connection, smallestPath));
+                    stack.add(new Path(connection, smallestPath, this));
                     Collections.sort(stack);
                 }
             }

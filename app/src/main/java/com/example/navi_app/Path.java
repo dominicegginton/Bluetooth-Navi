@@ -11,19 +11,26 @@ public class Path implements Comparable<Path> {
     public Path previousPath;
     private final String TAG = "PATH";
 
-    public Path(Node destination) {
+    //Location System
+    private LocationSystem currentSystem;
+
+    public Path(Node destination, LocationSystem currentSystem) {
         this.destination = destination;
+        this.currentSystem = currentSystem;
+        this.totalWeight = 0;
     }
 
-    public Path(Connection connection) {
+    public Path(Connection connection, LocationSystem currentSystem) {
         this.destination = connection.getNeighbor();
         this.totalWeight = connection.weight;
+        this.currentSystem = currentSystem;
     }
 
-    public Path(Connection connection, Path previousPath) {
+    public Path(Connection connection, Path previousPath, LocationSystem currentSystem) {
         this.destination = connection.getNeighbor();
         this.previousPath = previousPath;
         this.totalWeight = previousPath.totalWeight + connection.weight;
+        this.currentSystem = currentSystem;
     }
 
     public int compareTo(Path other){
@@ -42,9 +49,12 @@ public class Path implements Comparable<Path> {
                 interativePath = interativePath.previousPath;
             }
         }
-        for (int i = pathOrder.size(); i > 0; i--) {
-            output += " [" + pathOrder.get(i-1).address + "] ";
+
+        for(int i = pathOrder.size() - 1; i >= 0; i--){
+            Location navigationLocation = currentSystem.getLocation(pathOrder.get(i));
+            output += navigationLocation.name + " { " + pathOrder.get(i).address + " } ---> ";
         }
+        output += "Arrived :)";
         return output;
 
     }

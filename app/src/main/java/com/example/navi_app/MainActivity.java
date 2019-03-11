@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     TextView buildingTxt;
     TextView levelTxt;
     ProgressBar getLocationSpinner;
+    Spinner navigationSpinner;
 
     //Bluetooth Objects
     private BluetoothAdapter adapter;
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         // INIT LocationSystem
         try {
-            this.ls = new LocationSystem("https://gist.githubusercontent.com/dominicegginton/99dc73485e5a1937b2d0bfadd0fa8d0c/raw/e25418a876272e64d73652c6d4bf74cbfbc10ab4/coventryUniNaviData.json");
+            this.ls = new LocationSystem("https://gist.githubusercontent.com/dominicegginton/99dc73485e5a1937b2d0bfadd0fa8d0c/raw/b7eb320d35161edd8bcebf3dce43f8d907b433df/coventryUniNaviData.json");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -212,17 +214,21 @@ public class MainActivity extends AppCompatActivity {
                     locationTxt.setText(currentLocation.name);
 
                     // Log Nodes that belong to the location
-                    String output = currentLocation.name + " -- Nodes: {";
+                    String output = currentLocation.name + " - {";
                     for (Node node: currentLocation.nodes) {
                         output += " " + node.address;
                     }
                     output += " }";
-                    Log.i("Location", output);
-
-                    Path route = ls.navigate(currentLocation, ls.buildings.get(0).levels.get(0).locations.get(4));
-                    Log.i("route", route.convertToString());
+                    Log.i("Current Location", output);
                 }
                 getLocationSpinner.setVisibility(View.GONE);
+
+                // Define destination location, this will be done by the user with a drop down menu
+                Location destination = ls.buildings.get(0).levels.get(0).locations.get(4);
+                // Return new path object from Location object to Location object
+                Path myPath = ls.navigate(currentLocation, destination);
+                // Log Output
+                Log.i("Navigation", String.valueOf(myPath.convertToString() + " - " + myPath.totalWeight));
             }
         }, SCAN_TIME_BT);
 
