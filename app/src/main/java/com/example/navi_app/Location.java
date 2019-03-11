@@ -27,7 +27,7 @@ public class Location {
             {
                 JSONObject nodeJSON = nodesArray.getJSONObject(i);
                 // Pulling items from the array
-                nodes.add(new Node(nodeJSON, ls));
+                nodes.add(new Node(nodeJSON));
             }
             Log.i(TAG, name);
 
