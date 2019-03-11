@@ -1,6 +1,5 @@
 package com.example.navi_app;
 
-import android.util.JsonReader;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -42,7 +41,7 @@ public class LocationSystem {
                 try {
                     JSONObject buildingJSON = buildingsArray.getJSONObject(i);
                     // Pulling items from the array
-                    buildings.add(new Building(buildingJSON));
+                    buildings.add(new Building(buildingJSON, this));
                 } catch (JSONException e) {
                     // Oops
                 }
@@ -172,7 +171,7 @@ public class LocationSystem {
                     for (Node node: location.nodes) {
 
                         // If node is the same as search address
-                        if (node.address == address) {
+                        if (node.address.equals(address)) {
                             return node;
                         }
 
@@ -195,7 +194,8 @@ public class LocationSystem {
 
             Path smallestPath = stack.remove(0);
             for (Connection connection: smallestPath.destination.connections){
-                if (!visited.contains(connection.neighbor)){
+
+                if (!visited.contains(connection.getNeighbor())){
                     stack.add(new Path(connection, smallestPath));
                     Collections.sort(stack);
                 }

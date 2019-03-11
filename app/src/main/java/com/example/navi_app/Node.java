@@ -14,7 +14,12 @@ public class Node implements Comparable<BLNode>{
     public ArrayList<Connection> connections = new ArrayList<>();
     private final String TAG = "NODE";
 
-    public Node(JSONObject node) {
+    //Location System
+    private LocationSystem currentSystem;
+
+    public Node(JSONObject node, LocationSystem currentSystem) {
+
+        this.currentSystem = currentSystem;
 
         try {
             this.address = node.getString("address");
@@ -28,9 +33,9 @@ public class Node implements Comparable<BLNode>{
                 JSONObject connectionJSON = connectionsArray.getJSONObject(i);
                 String connectionDestination = connectionJSON.getString("destination");
                 int connectionWeight = connectionJSON.getInt("weight");
-                // Add new connection
-                //Connection newConnection = new Connection(ls.getNode(connectionDestination), connectionWeight);
-                //this.connections.add(newConnection);
+
+                Connection newConnection = new Connection(connectionDestination, connectionWeight, currentSystem);
+                this.connections.add(newConnection);
             }
 
         } catch (JSONException e) {
@@ -40,10 +45,6 @@ public class Node implements Comparable<BLNode>{
 
     public Node(String address) {
         this.address = address;
-    }
-
-    public void addConnection(Node neighbor, int weight){
-        this.connections.add(new Connection(neighbor,weight));
     }
 
     public int compareTo(BLNode o) {

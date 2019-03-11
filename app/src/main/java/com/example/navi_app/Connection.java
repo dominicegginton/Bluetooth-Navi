@@ -1,12 +1,20 @@
 package com.example.navi_app;
 
 public class Connection {
-    public Node neighbor;
+    private String neighbor;
     public int weight;
     private final String TAG = "CONNECTION";
 
-    public Connection (Node newNeighbor, int newWeight) {
+    //Location System
+    private LocationSystem currentSystem;
+
+    public Connection (String newNeighbor, int newWeight, LocationSystem currentSystem) {
+        this.currentSystem = currentSystem;
         this.neighbor = newNeighbor;
         this.weight = newWeight;
+    }
+
+    public Node getNeighbor() {
+        return currentSystem.getNode(neighbor);
     }
 }

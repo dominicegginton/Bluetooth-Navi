@@ -12,10 +12,14 @@ public class Building {
     public ArrayList<Level> levels = new ArrayList<>();
     private final String TAG = "BUILDING";
 
+    //Location System
+    private LocationSystem currentSystem;
 
-    public Building(JSONObject building) {
+
+    public Building(JSONObject building, LocationSystem currentSystem) {
 
         try {
+            this.currentSystem = currentSystem;
             this.name = building.getString("name");
 
             JSONArray levelsArray = building.getJSONArray("levels");
@@ -24,7 +28,7 @@ public class Building {
             {
                 JSONObject buildingJSON = levelsArray.getJSONObject(i);
                 // Pulling items from the array
-                levels.add(new Level(buildingJSON));
+                levels.add(new Level(buildingJSON, currentSystem));
             }
         } catch (JSONException e) {
             e.printStackTrace();

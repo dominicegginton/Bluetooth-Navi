@@ -1,5 +1,7 @@
 package com.example.navi_app;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 public class Path implements Comparable<Path> {
@@ -14,12 +16,12 @@ public class Path implements Comparable<Path> {
     }
 
     public Path(Connection connection) {
-        this.destination = connection.neighbor;
+        this.destination = connection.getNeighbor();
         this.totalWeight = connection.weight;
     }
 
     public Path(Connection connection, Path previousPath) {
-        this.destination = connection.neighbor;
+        this.destination = connection.getNeighbor();
         this.previousPath = previousPath;
         this.totalWeight = previousPath.totalWeight + connection.weight;
     }
@@ -29,21 +31,21 @@ public class Path implements Comparable<Path> {
     }
 
     public String convertToString() {
-        Path interativePath = this;
-        ArrayList<Node> pathOrder = new ArrayList<>();
-        pathOrder.add(this.destination);
-        Path previousPath = interativePath.previousPath;
-        while (previousPath != null) {
-            pathOrder.add(interativePath.previousPath.destination);
-            previousPath = interativePath.previousPath;
-        }
-
-
         String output = new String();
+        ArrayList<Node> pathOrder = new ArrayList<>();
+
+        Path interativePath = this;
+
+        if (interativePath != null) {
+            while (interativePath != null) {
+                pathOrder.add(interativePath.destination);
+                interativePath = interativePath.previousPath;
+            }
+        }
         for (int i = pathOrder.size(); i > 0; i--) {
             output += " [" + pathOrder.get(i-1).address + "] ";
         }
-
         return output;
+
     }
 }

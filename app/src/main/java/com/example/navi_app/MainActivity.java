@@ -78,8 +78,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
 
@@ -220,6 +218,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                     output += " }";
                     Log.i("Location", output);
+
+                    Path route = ls.navigate(currentLocation, ls.buildings.get(0).levels.get(0).locations.get(4));
+                    Log.i("route", route.convertToString());
                 }
                 getLocationSpinner.setVisibility(View.GONE);
             }

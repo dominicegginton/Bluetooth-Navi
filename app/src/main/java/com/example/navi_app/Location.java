@@ -15,8 +15,13 @@ public class Location {
     public int computersAvadiable;
     private final String TAG = "LOCATION";
 
+    //Location System
+    private LocationSystem currentSystem;
 
-    public Location(JSONObject location) {
+
+    public Location(JSONObject location, LocationSystem currentSystem) {
+
+        this.currentSystem = currentSystem;
 
         try {
             this.name = location.getString("name");
@@ -27,7 +32,7 @@ public class Location {
             {
                 JSONObject nodeJSON = nodesArray.getJSONObject(i);
                 // Pulling items from the array
-                nodes.add(new Node(nodeJSON));
+                nodes.add(new Node(nodeJSON, currentSystem));
             }
             Log.i(TAG, name);
 

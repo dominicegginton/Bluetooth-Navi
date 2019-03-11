@@ -12,7 +12,12 @@ public class Level {
     public ArrayList<Location> locations = new ArrayList<>();
     private final String TAG = "LEVEL";
 
-    public Level(JSONObject level) {
+    //Location System
+    private LocationSystem currentSystem;
+
+    public Level(JSONObject level, LocationSystem currentSystem) {
+
+        this.currentSystem = currentSystem;
 
         try {
             this.name = level.getString("name");
@@ -23,7 +28,7 @@ public class Level {
             {
                 JSONObject locationJSON = locationsArray.getJSONObject(i);
                 // Pulling items from the array
-                locations.add(new Location(locationJSON));
+                locations.add(new Location(locationJSON, currentSystem));
             }
 
         } catch (JSONException e) {
