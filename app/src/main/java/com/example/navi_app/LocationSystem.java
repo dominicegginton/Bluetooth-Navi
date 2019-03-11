@@ -18,33 +18,33 @@ public class LocationSystem {
     private String URL;
     private final String TAG = "LOCATION_SYSTEM";
 
-    public LocationSystem(String URL) throws IOException {
+    public LocationSystem(String URL) {
 
+        // Init Buildings
         this.buildings = new ArrayList<>();
+
+        // Init json request variables
         this.URL = URL;
-        //Some url endpoint that you may have
-        //String to place our result in
-        String result = null;
-        JSONObject locationSystemJSON = null;
-        String lsname = null;
-        //Instantiate new instance of our class
+        JSONObject locationSystemJSON;
         HttpGetRequest getRequest = new HttpGetRequest();
-        //Perform the doInBackground method, passing in our url
+
+        // Execute the getRequest do in background method
         try {
-            result = getRequest.execute(this.URL).get();
-            locationSystemJSON = new JSONObject(result);
-            lsname = locationSystemJSON.getString("systemName");
+            // Get result
+            String resultStirng = getRequest.execute(this.URL).get();
+            // Try Init json
+            locationSystemJSON = new JSONObject(resultStirng);
+            // Set system name
+            name = locationSystemJSON.getString("systemName");
+            // Get buildings json data
             JSONArray buildingsArray = locationSystemJSON.getJSONArray("buildings");
 
+            // For each building in boilings json data
             for (int i=0; i < buildingsArray.length(); i++)
             {
-                try {
-                    JSONObject buildingJSON = buildingsArray.getJSONObject(i);
-                    // Pulling items from the array
-                    buildings.add(new Building(buildingJSON, this));
-                } catch (JSONException e) {
-                    // Oops
-                }
+                JSONObject buildingJSON = buildingsArray.getJSONObject(i);
+                // Pulling items from the array
+                buildings.add(new Building(buildingJSON, this));
             }
 
         } catch (ExecutionException e) {
@@ -52,6 +52,8 @@ public class LocationSystem {
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
             e.printStackTrace();
         }
 
@@ -193,6 +195,22 @@ public class LocationSystem {
                         }
 
                     }
+                }
+            }
+        }
+        return null;
+    }
+
+    public Location getLocation(String searchString) {
+        // Search for the building using location object
+        for (Building building : buildings) {
+            for (Level level : building.levels) {
+                for (Location location : level.locations) {
+
+                    if(location.name.equals(searchString)) {
+                        return location;
+                    }
+
                 }
             }
         }

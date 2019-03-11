@@ -18,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -33,7 +34,9 @@ public class MainActivity extends AppCompatActivity {
     TextView buildingTxt;
     TextView levelTxt;
     ProgressBar getLocationSpinner;
-    Spinner navigationSpinner;
+    Button btn_navi;
+    EditText txt_search;
+    TextView naviTxt;
 
     //Bluetooth Objects
     private BluetoothAdapter adapter;
@@ -64,6 +67,9 @@ public class MainActivity extends AppCompatActivity {
         locationTxt = (TextView) findViewById(R.id.locationTxt);
         getLocationSpinner = (ProgressBar)findViewById(R.id.getLocationSpinner);
         getLocationSpinner.setVisibility(View.GONE);
+        txt_search = (EditText)findViewById(R.id.txt_search);
+        btn_navi = (Button)findViewById(R.id.btn_navi);
+        naviTxt = (TextView) findViewById(R.id.txt_navi);
 
         // INIT Bluetooth
         this.adapter = BluetoothAdapter.getDefaultAdapter();
@@ -75,11 +81,7 @@ public class MainActivity extends AppCompatActivity {
         enableBluetooth();
 
         // INIT LocationSystem
-        try {
-            this.ls = new LocationSystem("https://gist.githubusercontent.com/dominicegginton/99dc73485e5a1937b2d0bfadd0fa8d0c/raw/b7eb320d35161edd8bcebf3dce43f8d907b433df/coventryUniNaviData.json");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.ls = new LocationSystem("https://gist.githubusercontent.com/dominicegginton/99dc73485e5a1937b2d0bfadd0fa8d0c/raw/b7eb320d35161edd8bcebf3dce43f8d907b433df/coventryUniNaviData.json");
     }
 
 
@@ -220,18 +222,109 @@ public class MainActivity extends AppCompatActivity {
                     }
                     output += " }";
                     Log.i("Current Location", output);
+                }else {
+                    // cant get current location
+                    // Create Alert Dialog
+                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                    alertDialog.setTitle("Navigation Error");
+                    alertDialog.setMessage("Sorry can not find your current location");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Close", new DialogInterface.OnClickListener() {
+
+                        // Exit button on click event
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Exit this dialog
+                            dialog.dismiss();
+                        }
+
+                    });
+                    // Show Alert Dialog
+                    alertDialog.show();
                 }
                 getLocationSpinner.setVisibility(View.GONE);
-
-                // Define destination location, this will be done by the user with a drop down menu
-                Location destination = ls.buildings.get(0).levels.get(0).locations.get(4);
-                // Return new path object from Location object to Location object
-                Path myPath = ls.navigate(currentLocation, destination);
-                // Log Output
-                Log.i("Navigation", String.valueOf(myPath.convertToString() + " - " + myPath.totalWeight));
             }
         }, SCAN_TIME_BT);
 
+    }
+
+    public void btn_nai_Clicked(View view) {
+        final String searchString = txt_search.getText().toString();
+        getLocationSpinner.setVisibility(View.VISIBLE);
+
+        // Scan
+        scan();
+
+        // Create new delay handler of 10 seconds
+        Handler getCurrentLocationHandler = new Handler();
+        getCurrentLocationHandler.postDelayed(new Runnable() {
+
+            public void run() {
+                // Get current location object
+                Location currentLocation = ls.getCurrentLocation(scannedNodes);
+
+                // Check for null location
+                if (currentLocation != null) {
+
+                    // Output location details to UI
+                    buildingTxt.setText(ls.getCurrentBuilding(currentLocation).name);
+                    levelTxt.setText(ls.getCurrentLevel(currentLocation).name);
+                    locationTxt.setText(currentLocation.name);
+
+                    // Log Nodes that belong to the location
+                    String output = currentLocation.name + " - {";
+                    for (Node node: currentLocation.nodes) {
+                        output += " " + node.address;
+                    }
+                    output += " }";
+                    Log.i("Current Location", output);
+
+                    // Define destination location, this will be done by the user with a drop down menu
+                    Location destination = ls.getLocation(searchString);
+                    // Return new path object from Location object to Location object
+                    if (destination != null) {
+                        Path myPath = ls.navigate(currentLocation, destination);
+                        // Log Output
+                        naviTxt.setText(myPath.convertToString());
+                        Log.i("Navigation", String.valueOf(myPath.convertToString() + " - " + myPath.totalWeight));
+                    }else {
+                        // Create Alert Dialog
+                        AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                        alertDialog.setTitle("Navigation Error");
+                        alertDialog.setMessage("Sorry can not find destination location");
+                        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Close", new DialogInterface.OnClickListener() {
+
+                            // Exit button on click event
+                            public void onClick(DialogInterface dialog, int which) {
+                                // Exit this dialog
+                                dialog.dismiss();
+                            }
+
+                        });
+                        // Show Alert Dialog
+                        alertDialog.show();
+                    }
+
+                }else {
+                    // cant get current location
+                    // Create Alert Dialog
+                    AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
+                    alertDialog.setTitle("Navigation Error");
+                    alertDialog.setMessage("Sorry can not find your current location");
+                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Close", new DialogInterface.OnClickListener() {
+
+                        // Exit button on click event
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Exit this dialog
+                            dialog.dismiss();
+                        }
+
+                    });
+                    // Show Alert Dialog
+                    alertDialog.show();
+                }
+                getLocationSpinner.setVisibility(View.GONE);
+
+            }
+        }, SCAN_TIME_BT);
     }
 }
 
