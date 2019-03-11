@@ -1,16 +1,62 @@
 package com.example.navi_app;
 
+import android.util.JsonReader;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.concurrent.ExecutionException;
 
 public class LocationSystem {
 
     public String name;
-    public ArrayList<Building> buildings;
+    public ArrayList<Building> buildings = new ArrayList<>();
+    private String URL;
+    private final String TAG = "LOCATION_SYSTEM";
 
-    public LocationSystem() {
+    public LocationSystem(String URL) throws IOException {
+
         this.buildings = new ArrayList<>();
+        this.URL = URL;
+        //Some url endpoint that you may have
+        //String to place our result in
+        String result = null;
+        JSONObject locationSystemJSON = null;
+        String lsname = null;
+        //Instantiate new instance of our class
+        HttpGetRequest getRequest = new HttpGetRequest();
+        //Perform the doInBackground method, passing in our url
+        try {
+            result = getRequest.execute(this.URL).get();
+            locationSystemJSON = new JSONObject(result);
+            lsname = locationSystemJSON.getString("systemName");
+            JSONArray buildingsArray = locationSystemJSON.getJSONArray("buildings");
+
+            for (int i=0; i < buildingsArray.length(); i++)
+            {
+                try {
+                    JSONObject buildingJSON = buildingsArray.getJSONObject(i);
+                    // Pulling items from the array
+                    buildings.add(new Building(buildingJSON));
+                } catch (JSONException e) {
+                    // Oops
+                }
+            }
+
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.i(TAG, lsname);
     }
 
     /**
@@ -55,6 +101,8 @@ public class LocationSystem {
                 }
 
             }
+            String output = String.valueOf(closestNode.name + " : " + closestNode.address + " : " + closestNode.rssi );
+            Log.i("BLNode Cloest", output);
 
             // Return the location object that the closest node belongs to
             for (Building building : buildings) {
@@ -111,6 +159,52 @@ public class LocationSystem {
                     }
 
                 }
+            }
+        }
+        return null;
+    }
+
+    public Node getNode(String address){
+        // Search for the building using location object
+        for (Building building : buildings) {
+            for (Level level : building.levels) {
+                for (Location location : level.locations) {
+                    for (Node node: location.nodes) {
+
+                        // If node is the same as search address
+                        if (node.address == address) {
+                            return node;
+                        }
+
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    public Path navigate(Location originLocation, Location destinationLocation){
+        Node originRootNode = originLocation.nodes.get(0);
+        Node destinationRootNode = destinationLocation.nodes.get(0);
+        ArrayList<Path> stack = new ArrayList<>();
+        ArrayList<Node> visited = new ArrayList<>();
+
+        stack.add(new Path(originRootNode));
+
+        while (!stack.isEmpty()) {
+
+            Path smallestPath = stack.remove(0);
+            for (Connection connection: smallestPath.destination.connections){
+                if (!visited.contains(connection.neighbor)){
+                    stack.add(new Path(connection, smallestPath));
+                    Collections.sort(stack);
+                }
+            }
+
+            visited.add(smallestPath.destination);
+
+            if (smallestPath.destination == destinationRootNode) {
+                return smallestPath;
             }
         }
         return null;

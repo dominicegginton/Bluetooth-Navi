@@ -5,6 +5,7 @@ public class BLNode implements Comparable<Node>{
     public String address;
     public String name;
     public Integer rssi;
+    private final String TAG = "BLNODE";
 
     BLNode(String Nodeadrress, String name, Integer rssi) {
         this.address = Nodeadrress;

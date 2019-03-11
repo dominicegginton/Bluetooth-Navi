@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -35,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     //Bluetooth Objects
     private BluetoothAdapter adapter;
     private static final int REQUEST_ENABLE_BT = 99;
+    private static final int SCAN_TIME_BT = 5000;
     private final ArrayList<BLNode> scannedNodes = new ArrayList<>();
 
     //Location System Objects
@@ -71,31 +73,12 @@ public class MainActivity extends AppCompatActivity {
         enableBluetooth();
 
         // INIT LocationSystem
-        this.ls = new LocationSystem();
-        this.ls.name = "Coventry Uni";
+        try {
+            this.ls = new LocationSystem("https://gist.githubusercontent.com/dominicegginton/99dc73485e5a1937b2d0bfadd0fa8d0c/raw/e25418a876272e64d73652c6d4bf74cbfbc10ab4/coventryUniNaviData.json");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        Building building1 = new Building();
-        building1.name = "Engineering & Computing";
-
-        Level ground = new Level();
-        ground.name = "Ground";
-
-        Location roomECG01 = new Location();
-        roomECG01.name = "Demo Room - Macbook";
-        Node node01 = new Node();
-        node01.address = "D0:A6:37:E9:A2:62";
-        roomECG01.nodes.add(node01);
-
-        Location roomECG02 = new Location();
-        roomECG02.name = "Demo Room - Random Person Phone";
-        Node node02 = new Node();
-        node02.address = "38:A4:ED:94:BA:E7";
-        roomECG02.nodes.add(node02);
-
-        ground.locations.add(roomECG01);
-        ground.locations.add(roomECG02);
-        building1.levels.add(ground);
-        this.ls.buildings.add(building1);
 
     }
 
@@ -205,12 +188,11 @@ public class MainActivity extends AppCompatActivity {
                 adapter.cancelDiscovery();
             }
 
-        }, 10000);
+        }, SCAN_TIME_BT);
     }
 
     public void btn_getLocation_Clicked(View view) {
         getLocationSpinner.setVisibility(View.VISIBLE);
-
 
         // Scan
         scan();
@@ -228,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
 
                     // Output location details to UI
                     buildingTxt.setText(ls.getCurrentBuilding(currentLocation).name);
-                    levelTxt.setText(ls.getCurrentBuilding(currentLocation).name);
+                    levelTxt.setText(ls.getCurrentLevel(currentLocation).name);
                     locationTxt.setText(currentLocation.name);
 
                     // Log Nodes that belong to the location
@@ -241,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 getLocationSpinner.setVisibility(View.GONE);
             }
-        }, 10000);
+        }, SCAN_TIME_BT);
 
     }
 }

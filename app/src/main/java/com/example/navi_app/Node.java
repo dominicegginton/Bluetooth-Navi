@@ -1,14 +1,49 @@
 package com.example.navi_app;
 
+import android.util.Log;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class Node implements Comparable<BLNode>{
 
     public String address;
-    public ArrayList<Node> connectedNodes;
+    public ArrayList<Connection> connections = new ArrayList<>();
+    private final String TAG = "NODE";
 
-    public Node() {
-        this.connectedNodes = new ArrayList<>();
+    public Node(JSONObject node, LocationSystem ls) {
+
+        try {
+            this.address = node.getString("address");
+            this.ls = ls;
+
+            JSONArray connectionsArray = node.getJSONArray("connections");
+
+            Log.i(TAG, String.valueOf("Node: " + address + " Connections Length " + connectionsArray.length()));
+
+            for (int i=0; i < connectionsArray.length(); i++)
+            {
+                JSONObject connectionJSON = connectionsArray.getJSONObject(i);
+                String connectionDestination = connectionJSON.getString("destination");
+                int connectionWeight = connectionJSON.getInt("weight");
+                Connection newConnection = new Connection(ls.getNode(connectionDestination), connectionWeight);
+                this.connections.add(newConnection);
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Node(String address) {
+        this.address = address;
+    }
+
+    public void addConnection(Node neighbor, int weight){
+        this.connections.add(new Connection(neighbor,weight));
     }
 
     public int compareTo(BLNode o) {
