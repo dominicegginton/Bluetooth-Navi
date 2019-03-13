@@ -131,4 +131,5 @@
         app:layout_constraintTop_toBottomOf="@+id/txt_Current_Location"
         app:srcCompat="@color/colorPrimary" />
 
+
 </android.support.constraint.ConstraintLayout>
