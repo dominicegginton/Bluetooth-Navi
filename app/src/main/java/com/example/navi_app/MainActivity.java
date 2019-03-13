@@ -1,26 +1,15 @@
 package com.example.navi_app;
 
-import android.Manifest;
 import android.app.AlertDialog;
-import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothDevice;
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -50,6 +39,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     public void btn_nai_Clicked(View view) {
@@ -134,8 +128,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btn_login_Clicked(View view) {
+        LocationSystem ls = new LocationSystem("https://gist.githubusercontent.com/dominicegginton/99dc73485e5a1937b2d0bfadd0fa8d0c/raw/7ae81355ff7ddd4339c01cd58f8d5c1262686463/coventryUniNaviData.json");
         // Create new intent to open new page
         Intent intent = new Intent(getBaseContext(), menu.class);
+        intent.putExtra("location_system", ls);
         // Open page
         startActivity(intent);
     }

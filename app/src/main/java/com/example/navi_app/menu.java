@@ -70,7 +70,7 @@ public class menu extends AppCompatActivity {
         progressSpinner_CurrentLocation = (ProgressBar) findViewById(R.id.progressSpinner_CurrentLocation);
 
         // INIT LocationSystem
-        this.ls = new LocationSystem("https://gist.githubusercontent.com/dominicegginton/99dc73485e5a1937b2d0bfadd0fa8d0c/raw/b7eb320d35161edd8bcebf3dce43f8d907b433df/coventryUniNaviData.json");
+        this.ls = (LocationSystem) getIntent().getExtras().getSerializable("location_system");
 
         // update Current Location
         displayCurrentLocation();

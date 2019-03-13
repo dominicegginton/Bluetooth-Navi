@@ -7,11 +7,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
-public class LocationSystem {
+public class LocationSystem implements Serializable {
 
     public String name;
     public ArrayList<Building> buildings = new ArrayList<>();

@@ -1,6 +1,8 @@
 package com.example.navi_app;
 
-public class Connection {
+import java.io.Serializable;
+
+public class Connection implements Serializable {
     private String neighbor;
     public int weight;
     private final String TAG = "CONNECTION";

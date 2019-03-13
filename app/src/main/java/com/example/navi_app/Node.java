@@ -6,9 +6,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Node implements Comparable<BLNode>{
+public class Node implements Comparable<BLNode>, Serializable {
 
     public String address;
     public ArrayList<Connection> connections = new ArrayList<>();

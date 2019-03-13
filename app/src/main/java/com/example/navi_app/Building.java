@@ -4,9 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Building {
+public class Building implements Serializable {
 
     public String name;
     public ArrayList<Level> levels = new ArrayList<>();
