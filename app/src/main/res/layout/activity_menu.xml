@@ -15,6 +15,7 @@
         android:layout_marginEnd="50dp"
         android:layout_marginRight="50dp"
         android:layout_marginBottom="8dp"
+        android:onClick="btn_Navi_Clicked"
         android:text="Navigate To"
         app:layout_constraintBottom_toTopOf="@+id/btn_Info"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,6 +30,7 @@
         android:layout_marginEnd="50dp"
         android:layout_marginRight="50dp"
         android:layout_marginBottom="50dp"
+        android:onClick="btn_Info_Clicked"
         android:text="Location Information"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -66,7 +68,7 @@
         android:layout_marginTop="20dp"
         android:text="Engineering And Computing"
         android:textSize="18sp"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_Welcome" />
 
@@ -79,7 +81,7 @@
         android:layout_marginTop="8dp"
         android:text="Ground"
         android:textSize="18sp"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_Current_Building" />
 
@@ -92,7 +94,7 @@
         android:layout_marginTop="8dp"
         android:text="ECG01"
         android:textSize="18sp"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_Current_Level" />
 
@@ -106,9 +108,27 @@
         android:layout_marginTop="20dp"
         android:layout_marginEnd="50dp"
         android:layout_marginRight="50dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/imageView2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_Welcome" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/btn_Navi"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/txt_Current_Location"
+        app:srcCompat="@color/colorPrimary" />
 
 </android.support.constraint.ConstraintLayout>
