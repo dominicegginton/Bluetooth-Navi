@@ -18,9 +18,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class menu extends AppCompatActivity {
@@ -34,9 +36,8 @@ public class menu extends AppCompatActivity {
     // UI
     Button btn_Navi;
     Button btn_Info;
-    TextView txt_Welcome;
-    TextView txt_Current_Building;
-    TextView txt_Current_Level;
+    TextView edittxt_search;
+    TextView txt_Current_Building_Level;
     TextView txt_Current_Location;
     ProgressBar progressSpinner_CurrentLocation;
 
@@ -63,9 +64,9 @@ public class menu extends AppCompatActivity {
         // Init UI
         btn_Navi = (Button) findViewById(R.id.btn_Navi);
         btn_Info = (Button) findViewById(R.id.btn_Info);
-        txt_Welcome = (TextView) findViewById(R.id.txt_Welcome);
-        txt_Current_Building = (TextView) findViewById(R.id.txt_Current_Building);
-        txt_Current_Level = (TextView) findViewById(R.id.txt_Current_Level);
+        edittxt_search = (TextView) findViewById(R.id.edittxt_search);
+        txt_Current_Building_Level = (TextView) findViewById(R.id.txt_Current_Building_Location);
+        //txt_Current_Level = (TextView) findViewById(R.id.txt_Current_Level);
         txt_Current_Location = (TextView) findViewById(R.id.txt_Current_Location);
         progressSpinner_CurrentLocation = (ProgressBar) findViewById(R.id.progressSpinner_CurrentLocation);
 
@@ -83,6 +84,8 @@ public class menu extends AppCompatActivity {
         // Enable bluetooth
         enableBluetooth();
         displayCurrentLocation();
+        edittxt_search.clearFocus();
+        edittxt_search.setText(null);
     }
 
     // Define new BroadcastReceiver
@@ -187,9 +190,12 @@ public class menu extends AppCompatActivity {
     private void displayCurrentLocation () {
         // Scan
         progressSpinner_CurrentLocation.setVisibility(View.VISIBLE);
-        txt_Current_Building.setVisibility(View.INVISIBLE);
-        txt_Current_Level.setVisibility(View.INVISIBLE);
-        txt_Current_Location.setVisibility(View.INVISIBLE);
+        txt_Current_Building_Level.setVisibility(View.GONE);
+        txt_Current_Location.setVisibility(View.GONE);
+        btn_Info.setVisibility(View.GONE);
+        btn_Navi.setVisibility(View.GONE);
+        edittxt_search.setVisibility(View.GONE);
+        edittxt_search.setText(null);
         scan();
 
         // Create new delay handler of 10 seconds
@@ -204,8 +210,8 @@ public class menu extends AppCompatActivity {
                 if (currentLocation != null) {
 
                     // Output location details to UI
-                    txt_Current_Building.setText(ls.getCurrentBuilding(currentLocation).name);
-                    txt_Current_Level.setText(ls.getCurrentLevel(currentLocation).name);
+                    txt_Current_Building_Level.setText(ls.getCurrentBuilding(currentLocation).name + " - " + ls.getCurrentLevel(currentLocation).name);
+                    //txt_Current_Level.setText(ls.getCurrentLevel(currentLocation).name);
                     txt_Current_Location.setText(currentLocation.name);
 
                     // Log Nodes that belong to the location
@@ -215,28 +221,34 @@ public class menu extends AppCompatActivity {
                     }
                     output += " }";
                     Log.i("Current Location", output);
+
+
+                    progressSpinner_CurrentLocation.setVisibility(View.GONE);
+                    txt_Current_Building_Level.setVisibility(View.VISIBLE);
+                    txt_Current_Location.setVisibility(View.VISIBLE);
+                    btn_Info.setVisibility(View.VISIBLE);
+                    btn_Navi.setVisibility(View.VISIBLE);
+                    edittxt_search.setVisibility(View.VISIBLE);
                 }else {
                     // cant get current location
                     // Create Alert Dialog
+
                     AlertDialog alertDialog = new AlertDialog.Builder(menu.this).create();
-                    alertDialog.setTitle("Navigation Error");
-                    alertDialog.setMessage("Sorry can not find your current location");
+                    alertDialog.setTitle("Location System");
+                    alertDialog.setMessage("Your current location could not be found");
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Close", new DialogInterface.OnClickListener() {
 
                         // Exit button on click event
                         public void onClick(DialogInterface dialog, int which) {
                             // Exit this dialog
                             dialog.dismiss();
+
                         }
 
                     });
-                    // Show Alert Dialog
-                    alertDialog.show();
+
+
                 }
-                progressSpinner_CurrentLocation.setVisibility(View.GONE);
-                txt_Current_Building.setVisibility(View.VISIBLE);
-                txt_Current_Level.setVisibility(View.VISIBLE);
-                txt_Current_Location.setVisibility(View.VISIBLE);
             }
         }, SCAN_TIME_BT);
     }
@@ -245,10 +257,32 @@ public class menu extends AppCompatActivity {
         // Log
         Log.i(TAG, "Navigation Button Clicked - Sending user to navigation page");
 
-        // Create new intent to open new page
-        Intent intent = new Intent(getBaseContext(), navigation.class);
-        // Open page
-        startActivity(intent);
+        String searchString = edittxt_search.getText().toString();
+        Location destination = ls.getLocation(searchString);
+        if (destination != null) {
+            Location currentLocation = ls.getCurrentLocation(scannedNodes);
+            if (currentLocation != null) {
+                Path navigationPath = ls.navigate(currentLocation, destination);
+
+                if (navigationPath != null) {
+                    // Create new intent to open new page
+                    Intent intent = new Intent(getBaseContext(), navigation.class);
+                    intent.putExtra("Path", (Serializable) navigationPath);
+                    // Open page
+                    startActivity(intent);
+                } else {
+                    ls.alertBuilder(menu.this, "Navigation Error", "Sorry a path from " + currentLocation.name + " to " + destination.name + " can not be found").show();
+                }
+
+            } else {
+                Log.e("Navi","Cant get current location");
+                ls.alertBuilder(menu.this, "Navigation Error", "Sorry your current location can not be found").show();
+            }
+        } else {
+            Log.e("Navi","Cant get destination");
+            ls.alertBuilder(menu.this, "Navigation Error", "Sorry your the location " + searchString + " can not be found").show();
+        }
+
     }
 
     public void btn_Info_Clicked(View view){

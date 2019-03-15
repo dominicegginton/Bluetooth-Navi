@@ -1,5 +1,8 @@
 package com.example.navi_app;
 
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -120,11 +123,7 @@ public class LocationSystem implements Serializable {
                 }
             }
 
-        }else {
-            // No scanned nodes
-            throw new IllegalArgumentException("No Bluetooth Devices Found :(");
         }
-        // Return null
         return null;
     }
 
@@ -260,5 +259,22 @@ public class LocationSystem implements Serializable {
 
         // Can not find path to node
         return null;
+    }
+
+    public AlertDialog alertBuilder(Context context, String alertTitle, String alertMessage) {
+        AlertDialog alertDialog = new AlertDialog.Builder(context).create();
+        alertDialog.setTitle(alertTitle);
+        alertDialog.setMessage(alertMessage);
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Close", new DialogInterface.OnClickListener() {
+
+            // Exit button on click event
+            public void onClick(DialogInterface dialog, int which) {
+                // Exit this dialog
+                dialog.dismiss();
+
+            }
+
+        });
+        return alertDialog;
     }
 }

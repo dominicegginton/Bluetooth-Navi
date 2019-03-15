@@ -2,9 +2,10 @@ package com.example.navi_app;
 
 import android.util.Log;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Path implements Comparable<Path> {
+public class Path implements Comparable<Path>, Serializable {
 
     public int totalWeight;
     public Node destination;
@@ -57,5 +58,19 @@ public class Path implements Comparable<Path> {
         output += "Arrived :)";
         return output;
 
+    }
+
+    public ArrayList<Node> convertToArrayList() {
+        ArrayList<Node> pathOrder = new ArrayList<>();
+
+        Path interativePath = this;
+
+        if (interativePath != null) {
+            while (interativePath != null) {
+                pathOrder.add(interativePath.destination);
+                interativePath = interativePath.previousPath;
+            }
+        }
+        return pathOrder;
     }
 }

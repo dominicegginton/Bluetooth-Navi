@@ -48,6 +48,11 @@ public class Node implements Comparable<BLNode>, Serializable {
         this.address = address;
     }
 
+    public Node(String address, ArrayList<Connection> connections) {
+        this.address = address;
+        this.connections = connections;
+    }
+
     public int compareTo(BLNode o) {
         if (this.address == o.address) {
             return 0;
