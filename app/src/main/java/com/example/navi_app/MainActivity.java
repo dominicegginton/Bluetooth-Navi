@@ -18,8 +18,8 @@ public class MainActivity extends AppCompatActivity {
     //UI
     Button btn_register;
     Button btn_login;
-    EditText edittext_username;
-    EditText edittext_password;
+    EditText edit_username;
+    EditText edit_password;
 
     //Location System Objects
     private LocationSystem ls;
@@ -32,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
         // INIT UI
         btn_login = (Button) findViewById(R.id.btn_login);
         btn_register = (Button) findViewById(R.id.btn_register);
-        edittext_password = (EditText) findViewById(R.id.edittxt_password);
-        edittext_username = (EditText) findViewById(R.id.edittxt_username);
+        edit_password = (EditText) findViewById(R.id.edit_password);
+        edit_username = (EditText) findViewById(R.id.edit_email);
     }
 
     @Override
