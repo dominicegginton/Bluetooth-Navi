@@ -137,7 +137,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btn_register_Clicked(View view) {
-
+        // Create new intent to open new page
+        Intent intent = new Intent(getBaseContext(), registration.class);
+        // Open page
+        startActivity(intent);
     }
 }
 
