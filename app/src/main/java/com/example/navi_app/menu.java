@@ -33,13 +33,10 @@ public class menu extends AppCompatActivity {
     private static final int SCAN_TIME_BT = 5000;
     private final ArrayList<BLNode> scannedNodes = new ArrayList<>();
 
-    // UI
-    Button btn_Navi;
-    Button btn_Info;
-    TextView edittxt_search;
-    TextView txt_Current_Building_Level;
-    TextView txt_Current_Location;
-    ProgressBar progressSpinner_CurrentLocation;
+    // UI objects
+    Button btn_locate;
+    Button btn_current_location;
+    Button btn_information;
 
     //Location System Objects
     private LocationSystem ls;
@@ -61,14 +58,10 @@ public class menu extends AppCompatActivity {
         registerReceiver(mReceiver, filter);
         enableBluetooth();
 
-        // Init UI
-        btn_Navi = (Button) findViewById(R.id.btn_Navi);
-        btn_Info = (Button) findViewById(R.id.btn_Info);
-        edittxt_search = (TextView) findViewById(R.id.edittxt_search);
-        txt_Current_Building_Level = (TextView) findViewById(R.id.txt_Current_Building_Location);
-        //txt_Current_Level = (TextView) findViewById(R.id.txt_Current_Level);
-        txt_Current_Location = (TextView) findViewById(R.id.txt_Current_Location);
-        progressSpinner_CurrentLocation = (ProgressBar) findViewById(R.id.progressSpinner_CurrentLocation);
+        // INIT UI
+        btn_locate = (Button) findViewById(R.id.btn_locate);
+        btn_current_location = (Button) findViewById(R.id.btn_current_location);
+        btn_information = (Button) findViewById(R.id.btn_information);
 
         // INIT LocationSystem
         this.ls = (LocationSystem) getIntent().getExtras().getSerializable("location_system");
@@ -80,12 +73,6 @@ public class menu extends AppCompatActivity {
     @Override
     protected void onResume(){
         super.onResume();
-
-        // Enable bluetooth
-        enableBluetooth();
-        displayCurrentLocation();
-        edittxt_search.clearFocus();
-        edittxt_search.setText(null);
     }
 
     // Define new BroadcastReceiver
@@ -285,7 +272,27 @@ public class menu extends AppCompatActivity {
 
     }
 
-    public void btn_Info_Clicked(View view){
+    public void btn_locate_clicked(View view) {
+        // Log
+        Log.i(TAG, "Navigation Button Clicked - Sending user to navigation page");
+
+        // Create new intent to open new page
+        Intent intent = new Intent(getBaseContext(), current_location.class);
+        // Open page
+        startActivity(intent);
+    }
+
+    public void btn_current_location_clicked(View view) {
+        // Log
+        Log.i(TAG, "Current Location Button Clicked - Sending user to current location page");
+
+        // Create new intent to open new page
+        Intent intent = new Intent(getBaseContext(), navigation.class);
+        // Open page
+        startActivity(intent);
+    }
+
+    public void btn_Info_Clicked(View view) {
         // Log
         Log.i(TAG, "Information Button Clicked - Sending user to information page");
 
