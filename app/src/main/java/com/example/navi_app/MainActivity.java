@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void btn_login_Clicked(View view) {
-        LocationSystem ls = new LocationSystem("https://gist.githubusercontent.com/dominicegginton/99dc73485e5a1937b2d0bfadd0fa8d0c/raw/7ae81355ff7ddd4339c01cd58f8d5c1262686463/coventryUniNaviData.json");
+        LocationSystem ls = new LocationSystem("https://gist.githubusercontent.com/dominicegginton/99dc73485e5a1937b2d0bfadd0fa8d0c/raw/366c0aa82a74cc03ec0a0f13cf6f1a146c82fa38/coventryUniNaviData.json");
         // Create new intent to open new page
         Intent intent = new Intent(getBaseContext(), menu.class);
         intent.putExtra("location_system", ls);

@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -36,7 +38,20 @@ public class current_location extends AppCompatActivity {
     TextView txt_location_level;
     TextView txt_location_building;
     ProgressBar progress_spinner;
-
+    
+    ConstraintLayout layout_location_data_type;
+    ImageView img_location_data_type;
+    TextView txt_location_data_type;
+    ConstraintLayout layout_location_data_computers;
+    ImageView img_location_data_computers;
+    TextView txt_location_data_computers;
+    ConstraintLayout layout_location_data_workspaces;
+    ImageView img_location_data_workspaces;
+    TextView txt_location_data_workspaces;
+    ConstraintLayout layout_location_data_food;
+    ImageView img_location_data_food;
+    TextView txt_location_data_food;
+    
     //Location System Objects
     private LocationSystem ls;
 
@@ -65,6 +80,19 @@ public class current_location extends AppCompatActivity {
         txt_location_level = (TextView) findViewById(R.id.txt_location_level);
         txt_location_building = (TextView) findViewById(R.id.txt_location_Building);
         progress_spinner = (ProgressBar) findViewById(R.id.progress_spinner);
+
+        layout_location_data_type = (ConstraintLayout) findViewById(R.id.layout_location_data_type);
+        img_location_data_type = (ImageView) findViewById(R.id.img_location_data_type);
+        txt_location_data_type = (TextView) findViewById(R.id.txt_location_data_type);
+        layout_location_data_computers = (ConstraintLayout) findViewById(R.id.layout_location_data_computers);
+        img_location_data_computers = (ImageView) findViewById(R.id.img_location_data_computer);
+        txt_location_data_computers = (TextView) findViewById(R.id.txt_location_data_computers);
+        layout_location_data_workspaces = (ConstraintLayout) findViewById(R.id.layout_location_data_workspace);
+        img_location_data_workspaces = (ImageView) findViewById(R.id.img_location_data_workspaces);
+        txt_location_data_workspaces = (TextView) findViewById(R.id.txt_location_data_workspaces);
+        layout_location_data_food = (ConstraintLayout) findViewById(R.id.layout_location_data_food);
+        img_location_data_food = (ImageView) findViewById(R.id.img_location_data_food);
+        txt_location_data_food = (TextView) findViewById(R.id.txt_location_data_food);
 
         // update Current Location
         displayCurrentLocation();
@@ -175,6 +203,19 @@ public class current_location extends AppCompatActivity {
         txt_location_name.setVisibility(View.GONE);
         txt_location_level.setVisibility(View.GONE);
         txt_location_building.setVisibility(View.GONE);
+
+        layout_location_data_type.setVisibility(View.GONE);
+        //img_location_data_type.setVisibility(View.GONE);
+        //txt_location_data_type.setVisibility(View.GONE);
+        layout_location_data_computers.setVisibility(View.GONE);
+        //img_location_data_computers.setVisibility(View.GONE);
+        //txt_location_data_computers.setVisibility(View.GONE);
+        layout_location_data_workspaces.setVisibility(View.GONE);
+        //img_location_data_workspaces.setVisibility(View.GONE);
+        //txt_location_data_workspaces.setVisibility(View.GONE);
+        layout_location_data_food.setVisibility(View.GONE);
+        //img_location_data_food.setVisibility(View.GONE);
+        //txt_location_data_food.setVisibility(View.GONE);
         scan();
 
         // Create new delay handler of 10 seconds
@@ -185,13 +226,49 @@ public class current_location extends AppCompatActivity {
                 // Get current location object
                 Location currentLocation = ls.getCurrentLocation(scannedNodes);
 
-                // Check for null location
+                // Check for null locations
                 if (currentLocation != null) {
+                    // End Spinner
+                    progress_spinner.setVisibility(View.GONE);
 
                     // Output location details to UI
                     txt_location_building.setText(ls.getCurrentBuilding(currentLocation).name);
                     txt_location_level.setText(ls.getCurrentLevel(currentLocation).name);
                     txt_location_name.setText(currentLocation.name);
+                    txt_location_name.setVisibility(View.VISIBLE);
+                    txt_location_level.setVisibility(View.VISIBLE);
+                    txt_location_building.setVisibility(View.VISIBLE);
+                    
+                    txt_location_data_type.setText(currentLocation.type);
+                    //txt_location_data_type.setVisibility(View.VISIBLE);
+                    Log.i("computers", currentLocation.computers);
+                    if(currentLocation.type.equals("Classroom") | currentLocation.type.equals("Lecture")) {
+                        img_location_data_type.setImageResource(R.drawable.icon_presenter);
+                    } else if (currentLocation.type.equals("Reception")) {
+                        img_location_data_type.setImageResource(R.drawable.icon_reception);
+                    } else if (currentLocation.type.equals("Walkway")) {
+                        img_location_data_type.setImageResource(R.drawable.icon_path);
+                    } else {
+                        img_location_data_type.setImageResource(R.drawable.icon_building);
+                    }
+                    //img_location_data_type.setVisibility(View.VISIBLE);
+                    layout_location_data_type.setVisibility(View.VISIBLE);
+                    
+                    if(!currentLocation.computers.equals("")) {
+                        txt_location_data_computers.setText(currentLocation.computers);
+                        img_location_data_computers.setImageResource(R.drawable.icon_computer);
+                        layout_location_data_computers.setVisibility(View.VISIBLE);
+                    }
+                    if(!currentLocation.workspace.equals("")) {
+                        txt_location_data_workspaces.setText(currentLocation.workspace);
+                        img_location_data_workspaces.setImageResource(R.drawable.icon_table);
+                        layout_location_data_workspaces.setVisibility(View.VISIBLE);
+                    }
+                    if(!currentLocation.food.equals("")) {
+                        txt_location_data_food.setText(currentLocation.food);
+                        img_location_data_food.setImageResource(R.drawable.icon_food);
+                        layout_location_data_food.setVisibility(View.VISIBLE);
+                    }
 
                     // Log Nodes that belong to the location
                     String output = currentLocation.name + " - {";
@@ -202,10 +279,6 @@ public class current_location extends AppCompatActivity {
                     Log.i("Current Location", output);
 
 
-                    progress_spinner.setVisibility(View.GONE);
-                    txt_location_name.setVisibility(View.VISIBLE);
-                    txt_location_level.setVisibility(View.VISIBLE);
-                    txt_location_building.setVisibility(View.VISIBLE);
                 }else {
                     // cant get current location
                     // Create Alert Dialog
