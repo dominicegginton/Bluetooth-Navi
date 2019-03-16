@@ -17,6 +17,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -27,6 +30,18 @@ public class current_location extends AppCompatActivity {
     private static final int REQUEST_ENABLE_BT = 99;
     private static final int SCAN_TIME_BT = 5000;
     private final ArrayList<BLNode> scannedNodes = new ArrayList<>();
+
+    // UI Objects
+    TextView txt_location_name;
+    TextView txt_location_level;
+    TextView txt_location_building;
+    ProgressBar progress_spinner;
+
+    //Location System Objects
+    private LocationSystem ls;
+
+    // Log TAG
+    private final String TAG = "CURRENT_LOCATION";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +56,18 @@ public class current_location extends AppCompatActivity {
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         registerReceiver(mReceiver, filter);
         enableBluetooth();
+
+        // INIT LocationSystem
+        this.ls = (LocationSystem) getIntent().getExtras().getSerializable("location_system");
+
+        // INIT UI
+        txt_location_name = (TextView) findViewById(R.id.txt_location_name);
+        txt_location_level = (TextView) findViewById(R.id.txt_location_level);
+        txt_location_building = (TextView) findViewById(R.id.txt_location_Building);
+        progress_spinner = (ProgressBar) findViewById(R.id.progress_spinner);
+
+        // update Current Location
+        displayCurrentLocation();
     }
 
     // Define new BroadcastReceiver
@@ -83,7 +110,7 @@ public class current_location extends AppCompatActivity {
             Log.e("Bluetooth", "Sorry this device does not support bluetooth :(");
 
             // Create Alert Dialog
-            AlertDialog alertDialog = new AlertDialog.Builder(menu.this).create();
+            AlertDialog alertDialog = new AlertDialog.Builder(current_location.this).create();
             alertDialog.setTitle("Bluetooth not supported");
             alertDialog.setMessage("Sorry your device doesn't support bluetooth");
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Exit App", new DialogInterface.OnClickListener() {
@@ -143,14 +170,11 @@ public class current_location extends AppCompatActivity {
     }
 
     private void displayCurrentLocation () {
-        // Scan
-        progressSpinner_CurrentLocation.setVisibility(View.VISIBLE);
-        txt_Current_Building_Level.setVisibility(View.GONE);
-        txt_Current_Location.setVisibility(View.GONE);
-        btn_Info.setVisibility(View.GONE);
-        btn_Navi.setVisibility(View.GONE);
-        edittxt_search.setVisibility(View.GONE);
-        edittxt_search.setText(null);
+        // Scan for nodes
+        progress_spinner.setVisibility(View.VISIBLE);
+        txt_location_name.setVisibility(View.GONE);
+        txt_location_level.setVisibility(View.GONE);
+        txt_location_building.setVisibility(View.GONE);
         scan();
 
         // Create new delay handler of 10 seconds
@@ -165,9 +189,9 @@ public class current_location extends AppCompatActivity {
                 if (currentLocation != null) {
 
                     // Output location details to UI
-                    txt_Current_Building_Level.setText(ls.getCurrentBuilding(currentLocation).name + " - " + ls.getCurrentLevel(currentLocation).name);
-                    //txt_Current_Level.setText(ls.getCurrentLevel(currentLocation).name);
-                    txt_Current_Location.setText(currentLocation.name);
+                    txt_location_building.setText(ls.getCurrentBuilding(currentLocation).name);
+                    txt_location_level.setText(ls.getCurrentLevel(currentLocation).name);
+                    txt_location_name.setText(currentLocation.name);
 
                     // Log Nodes that belong to the location
                     String output = currentLocation.name + " - {";
@@ -178,17 +202,15 @@ public class current_location extends AppCompatActivity {
                     Log.i("Current Location", output);
 
 
-                    progressSpinner_CurrentLocation.setVisibility(View.GONE);
-                    txt_Current_Building_Level.setVisibility(View.VISIBLE);
-                    txt_Current_Location.setVisibility(View.VISIBLE);
-                    btn_Info.setVisibility(View.VISIBLE);
-                    btn_Navi.setVisibility(View.VISIBLE);
-                    edittxt_search.setVisibility(View.VISIBLE);
+                    progress_spinner.setVisibility(View.GONE);
+                    txt_location_name.setVisibility(View.VISIBLE);
+                    txt_location_level.setVisibility(View.VISIBLE);
+                    txt_location_building.setVisibility(View.VISIBLE);
                 }else {
                     // cant get current location
                     // Create Alert Dialog
 
-                    AlertDialog alertDialog = new AlertDialog.Builder(menu.this).create();
+                    AlertDialog alertDialog = new AlertDialog.Builder(current_location.this).create();
                     alertDialog.setTitle("Location System");
                     alertDialog.setMessage("Your current location could not be found");
                     alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Close", new DialogInterface.OnClickListener() {

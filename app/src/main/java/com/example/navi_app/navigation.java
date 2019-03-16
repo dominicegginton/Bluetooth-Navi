@@ -17,10 +17,10 @@ public class navigation extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_navigation);
 
-        Path navigationPath = (Path) getIntent().getExtras().getSerializable("Path");
+        //Path navigationPath = (Path) getIntent().getExtras().getSerializable("Path");
 
         txt_test = (TextView) findViewById(R.id.txt_test);
-        txt_test.setText(navigationPath.convertToString());
+        //txt_test.setText(navigationPath.convertToString());
 
     }
 }
