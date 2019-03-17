@@ -33,6 +33,9 @@ public class navigation extends AppCompatActivity {
     private static final int SCAN_TIME_BT = 5000;
     private final ArrayList<BLNode> scannedNodes = new ArrayList<>();
 
+    //Location System Objects
+    private LocationSystem ls;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,6 +49,9 @@ public class navigation extends AppCompatActivity {
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         registerReceiver(mReceiver, filter);
         enableBluetooth();
+
+        // INIT LocationSystem
+        this.ls = (LocationSystem) getIntent().getExtras().getSerializable("location_system");
 
     }
 
