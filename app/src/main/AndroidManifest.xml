@@ -15,7 +15,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".registration"></activity>
+        <activity android:name=".navigation_display"></activity>
+        <activity android:name=".registration" />
         <activity android:name=".current_location" />
         <activity android:name=".information" />
         <activity android:name=".navigation" />

@@ -74,6 +74,7 @@ public class menu extends AppCompatActivity {
 
         // Create new intent to open new page
         Intent intent = new Intent(getBaseContext(), navigation.class);
+        intent.putExtra("location_system", this.ls);
         // Open page
         startActivity(intent);
     }
@@ -84,6 +85,7 @@ public class menu extends AppCompatActivity {
 
         // Create new intent to open new page
         Intent intent = new Intent(getBaseContext(), information.class);
+        intent.putExtra("location_system", this.ls);
         // Open page
         startActivity(intent);
     }
