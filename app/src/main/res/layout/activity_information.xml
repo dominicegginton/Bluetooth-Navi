@@ -4,4 +4,77 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".information"/>
+    tools:context=".information">
+
+<ImageView
+android:id="@+id/img_logo"
+android:layout_width="104dp"
+android:layout_height="104dp"
+android:layout_marginStart="50dp"
+android:layout_marginLeft="50dp"
+android:layout_marginTop="50dp"
+android:src="@drawable/cov_logo"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintTop_toTopOf="parent" />
+
+<TextView
+android:id="@+id/txt_title"
+android:layout_width="346dp"
+android:layout_height="wrap_content"
+android:layout_below="@+id/img_logo"
+android:layout_marginStart="50dp"
+android:layout_marginLeft="50dp"
+android:layout_marginEnd="50dp"
+android:layout_marginRight="50dp"
+android:text="Information"
+android:textAlignment="center"
+android:textColor="#101"
+android:textSize="40sp"
+android:textStyle="bold"
+app:layout_constraintEnd_toEndOf="parent"
+app:layout_constraintHorizontal_bias="0.514"
+app:layout_constraintStart_toStartOf="parent"
+app:layout_constraintTop_toBottomOf="@+id/img_logo" />
+
+    <android.support.constraint.ConstraintLayout
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:layout_marginStart="50dp"
+    android:layout_marginLeft="50dp"
+    android:layout_marginTop="20dp"
+    android:layout_marginEnd="50dp"
+    android:layout_marginRight="50dp"
+    android:layout_marginBottom="50dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@+id/txt_title">
+
+        <ListView
+            android:id="@+id/list_information"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/search_information"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <SearchView
+            android:id="@+id/search_information"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:queryHint="Search For Location"
+            app:layout_constraintBottom_toTopOf="@+id/list_information"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </SearchView>
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

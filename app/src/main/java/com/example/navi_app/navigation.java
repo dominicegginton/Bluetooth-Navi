@@ -254,45 +254,6 @@ public class navigation extends AppCompatActivity implements SearchView.OnQueryT
     @Override
     public boolean onQueryTextSubmit(String query) {
         location_search_adapter.filter(query);
-
-        scan();
-        // Create new delay handler of 10 seconds
-        Handler getCurrentLocationHandler = new Handler();
-        getCurrentLocationHandler.postDelayed(new Runnable() {
-
-            public void run() {
-                // Get current location object
-                Location currentLocation = ls.getCurrentLocation(scannedNodes);
-
-                // Check for null locations
-                if (currentLocation != null) {
-
-
-
-                }else {
-                    // cant get current location
-                    // Create Alert Dialog
-
-                    AlertDialog alertDialog = new AlertDialog.Builder(navigation.this).create();
-                    alertDialog.setTitle("Location System");
-                    alertDialog.setMessage("Your current location could not be found");
-                    alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Close", new DialogInterface.OnClickListener() {
-
-                        // Exit button on click event
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Exit this dialog
-                            dialog.dismiss();
-
-                        }
-
-                    });
-
-
-                }
-            }
-        }, SCAN_TIME_BT);
-
-
         return false;
     }
 
