@@ -62,7 +62,7 @@ public class menu extends AppCompatActivity {
         Log.i(TAG, "Navigation Button Clicked - Sending user to navigation page");
 
         // Create new intent to open new page
-        Intent intent = new Intent(getBaseContext(), current_location.class);
+        Intent intent = new Intent(getBaseContext(), navigation.class);
         intent.putExtra("location_system", this.ls);
         // Open page
         startActivity(intent);
@@ -73,7 +73,7 @@ public class menu extends AppCompatActivity {
         Log.i(TAG, "Current Location Button Clicked - Sending user to current location page");
 
         // Create new intent to open new page
-        Intent intent = new Intent(getBaseContext(), navigation.class);
+        Intent intent = new Intent(getBaseContext(), current_location.class);
         intent.putExtra("location_system", this.ls);
         // Open page
         startActivity(intent);
