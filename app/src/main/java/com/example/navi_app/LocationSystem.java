@@ -100,7 +100,7 @@ public class LocationSystem {
                 for (Location location : level.locations) {
 
                     // If location is the same as current location return level
-                    if (location == currentLocation) {
+                    if (location.id == currentLocation.id) {
                         return level;
                     }
 
@@ -118,7 +118,7 @@ public class LocationSystem {
                 for (Location location : level.locations) {
 
                     // If location is the same as current location return building
-                    if (location == currentLocation) {
+                    if (location.id == currentLocation.id) {
                         return building;
                     }
 
