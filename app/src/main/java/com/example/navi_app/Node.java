@@ -1,47 +1,21 @@
 package com.example.navi_app;
 
-import android.util.Log;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.Serializable;
+import android.content.Context;
 import java.util.ArrayList;
 
-public class Node implements Comparable<BLNode>, Serializable {
+public class Node implements Comparable<BLNode>{
 
     public String address;
     public ArrayList<Connection> connections = new ArrayList<>();
     private final String TAG = "NODE";
+    private transient Context context;
 
-    //Location System
-    private LocationSystem currentSystem;
+    public Node(String newNodeAddress, Context context) {
+        this.address = newNodeAddress;
+        this.context = context;
 
-    public Node(JSONObject node, LocationSystem currentSystem) {
-
-        this.currentSystem = currentSystem;
-
-        try {
-            this.address = node.getString("address");
-
-            JSONArray connectionsArray = node.getJSONArray("connections");
-
-            Log.i(TAG, String.valueOf("Node: " + address + " Connections Length " + connectionsArray.length()));
-
-            for (int i=0; i < connectionsArray.length(); i++)
-            {
-                JSONObject connectionJSON = connectionsArray.getJSONObject(i);
-                String connectionDestination = connectionJSON.getString("destination");
-                int connectionWeight = connectionJSON.getInt("weight");
-
-                Connection newConnection = new Connection(connectionDestination, connectionWeight, currentSystem);
-                this.connections.add(newConnection);
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        DatabaseHelp databaseHelper = new DatabaseHelp(context);
+        this.connections = databaseHelper.getConnections(address);
     }
 
     public Node(String address) {

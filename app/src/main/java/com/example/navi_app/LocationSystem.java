@@ -15,52 +15,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.concurrent.ExecutionException;
 
-public class LocationSystem implements Serializable {
+public class LocationSystem {
 
-    public String name;
-    public ArrayList<Building> buildings = new ArrayList<>();
-    private String URL;
+    public ArrayList<Building> buildings;
     private final String TAG = "LOCATION_SYSTEM";
+    private Context context;
 
-    public LocationSystem(String URL) {
+    public LocationSystem(Context context) {
+        this.context = context;
 
-        // Init Buildings
-        this.buildings = new ArrayList<>();
-
-        // Init json request variables
-        this.URL = URL;
-        JSONObject locationSystemJSON;
-        HttpGetRequest getRequest = new HttpGetRequest();
-
-        // Execute the getRequest do in background method
-        try {
-            // Get result
-            String resultStirng = getRequest.execute(this.URL).get();
-            // Try Init json
-            locationSystemJSON = new JSONObject(resultStirng);
-            // Set system name
-            name = locationSystemJSON.getString("systemName");
-            // Get buildings json data
-            JSONArray buildingsArray = locationSystemJSON.getJSONArray("buildings");
-
-            // For each building in boilings json data
-            for (int i=0; i < buildingsArray.length(); i++)
-            {
-                JSONObject buildingJSON = buildingsArray.getJSONObject(i);
-                // Pulling items from the array
-                buildings.add(new Building(buildingJSON, this));
-            }
-
-        } catch (ExecutionException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
+        DatabaseHelp databaseHelper = new DatabaseHelp(this.context);
+        this.buildings = databaseHelper.getBuildings();
     }
 
     /**
@@ -163,61 +128,6 @@ public class LocationSystem implements Serializable {
         return null;
     }
 
-    public Node getNode(String address){
-        // Search for the building using location object
-        for (Building building : buildings) {
-            for (Level level : building.levels) {
-                for (Location location : level.locations) {
-                    for (Node node: location.nodes) {
-
-                        // If node is the same as search address
-                        if (node.address.equals(address)) {
-                            return node;
-                        }
-
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    public Location getLocation(Node searchNode) {
-        // Search for the building using location object
-        for (Building building : buildings) {
-            for (Level level : building.levels) {
-                for (Location location : level.locations) {
-                    for (Node node: location.nodes) {
-
-                        // If node is the same as search node object
-                        if (node.equals(searchNode)) {
-                            return location;
-                        }
-
-                    }
-                }
-            }
-        }
-        return null;
-    }
-
-    public Location getLocation(String searchString) {
-        // Search for the building using location object
-        for (Building building : buildings) {
-            for (Level level : building.levels) {
-                for (Location location : level.locations) {
-
-                    // If location name is equal to search string
-                    if(location.name.equals(searchString)) {
-                        return location;
-                    }
-
-                }
-            }
-        }
-        return null;
-    }
-
     public Path navigate(Location originLocation, Location destinationLocation){
 
         // Get root nodes for both origin and destination - first nodes in array
@@ -225,11 +135,10 @@ public class LocationSystem implements Serializable {
         Node destinationRootNode = destinationLocation.nodes.get(0);
         // Define new asrraylist for stack and visited
         ArrayList<Path> stack = new ArrayList<>();
-        ArrayList<Node> visited = new ArrayList<>();
+        ArrayList<String> visited = new ArrayList<>();
 
         // Add new Path to originRootnNode to the stack
-        stack.add(new Path(originRootNode, this));
-
+        stack.add(new Path(originRootNode));
 
         // While the stack is empty
         while (!stack.isEmpty()) {
@@ -240,19 +149,17 @@ public class LocationSystem implements Serializable {
             // For each connection from destination of smallest path
             for (Connection connection: smallestPath.destination.connections){
 
-                // If we haven not visited this node before
-                if (!visited.contains(connection.getNeighbor())){
-                    // Add new Path to this connection destination
-                    stack.add(new Path(connection, smallestPath, this));
+                if (!visited.contains(connection.getNeighbor().address)) {
+                    stack.add(new Path(connection, smallestPath));
                     Collections.sort(stack);
                 }
             }
 
             // Add this destination to visited
-            visited.add(smallestPath.destination);
+            visited.add(smallestPath.destination.address);
 
             // The smallest path has reached the destination root node return the path
-            if (smallestPath.destination == destinationRootNode) {
+            if (smallestPath.destination.address.equals(destinationRootNode.address)) {
                 return smallestPath;
             }
         }

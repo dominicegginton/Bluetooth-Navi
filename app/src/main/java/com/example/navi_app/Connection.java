@@ -1,14 +1,22 @@
 package com.example.navi_app;
 
-import java.io.Serializable;
+import android.content.Context;
 
-public class Connection implements Serializable {
-    private String neighbor;
+public class Connection {
+
+    public String neighbor;
     public int weight;
     private final String TAG = "CONNECTION";
 
     //Location System
     private LocationSystem currentSystem;
+    private Context context;
+
+    public Connection (String newNeighbor, int newWeight, Context context) {
+        this.neighbor = newNeighbor;
+        this.weight = newWeight;
+        this.context = context;
+    }
 
     public Connection (String newNeighbor, int newWeight, LocationSystem currentSystem) {
         this.currentSystem = currentSystem;
@@ -17,6 +25,7 @@ public class Connection implements Serializable {
     }
 
     public Node getNeighbor() {
-        return currentSystem.getNode(neighbor);
+        DatabaseHelp databaseHelper = new DatabaseHelp(this.context);
+        return databaseHelper.getNode(this.neighbor);
     }
 }

@@ -1,40 +1,23 @@
 package com.example.navi_app;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import android.content.Context;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Level implements Serializable {
+public class Level {
 
+    private int id;
     public String name;
-    public ArrayList<Location> locations = new ArrayList<>();
+    public ArrayList<Location> locations;
     private final String TAG = "LEVEL";
+    private Context context;
 
-    //Location System
-    private LocationSystem currentSystem;
+    public Level(int newLevelID, String newLevelName, Context context) {
+        this.id = newLevelID;
+        this.name = newLevelName;
+        this.context = context;
 
-    public Level(JSONObject level, LocationSystem currentSystem) {
-
-        this.currentSystem = currentSystem;
-
-        try {
-            this.name = level.getString("name");
-
-            JSONArray locationsArray = level.getJSONArray("locations");
-
-            for (int i=0; i < locationsArray.length(); i++)
-            {
-                JSONObject locationJSON = locationsArray.getJSONObject(i);
-                // Pulling items from the array
-                locations.add(new Location(locationJSON, currentSystem));
-            }
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+        DatabaseHelp databaseHelper = new DatabaseHelp(context);
+        this.locations = databaseHelper.getLocations(this.id);
     }
 }
