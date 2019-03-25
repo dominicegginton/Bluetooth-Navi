@@ -10,6 +10,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -22,6 +24,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 
@@ -49,7 +52,11 @@ public class menu extends AppCompatActivity {
         btn_information = (Button) findViewById(R.id.btn_information);
 
         // INIT LocationSystem
-        this.ls = (LocationSystem) getIntent().getExtras().getSerializable("location_system");
+        //this.ls = (LocationSystem) getIntent().getExtras().getSerializable("location_system");
+        this.ls = new LocationSystem(this);
+        Log.i(TAG , String.valueOf(ls));
+
+
     }
 
     @Override
@@ -63,7 +70,6 @@ public class menu extends AppCompatActivity {
 
         // Create new intent to open new page
         Intent intent = new Intent(getBaseContext(), navigation.class);
-        intent.putExtra("location_system", this.ls);
         // Open page
         startActivity(intent);
     }
@@ -74,7 +80,6 @@ public class menu extends AppCompatActivity {
 
         // Create new intent to open new page
         Intent intent = new Intent(getBaseContext(), current_location.class);
-        intent.putExtra("location_system", this.ls);
         // Open page
         startActivity(intent);
     }
@@ -85,7 +90,6 @@ public class menu extends AppCompatActivity {
 
         // Create new intent to open new page
         Intent intent = new Intent(getBaseContext(), information.class);
-        intent.putExtra("location_system", this.ls);
         // Open page
         startActivity(intent);
     }

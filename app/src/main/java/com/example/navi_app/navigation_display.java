@@ -26,7 +26,7 @@ public class navigation_display extends AppCompatActivity {
         list_nodes = (ListView) findViewById(R.id.list_nodes);
 
         // INIT LocationSystem
-        this.ls = (LocationSystem) getIntent().getExtras().getSerializable("location_system");
+        this.ls = new LocationSystem(this);
         this.path = (Path) getIntent().getExtras().getSerializable("path");
 
         ArrayList<String> nodeStrings = new ArrayList<>();

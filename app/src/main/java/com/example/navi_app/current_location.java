@@ -73,7 +73,7 @@ public class current_location extends AppCompatActivity {
         enableBluetooth();
 
         // INIT LocationSystem
-        this.ls = (LocationSystem) getIntent().getExtras().getSerializable("location_system");
+        this.ls = new LocationSystem(this);
 
         // INIT UI
         txt_location_name = (TextView) findViewById(R.id.txt_location_name);
@@ -254,17 +254,17 @@ public class current_location extends AppCompatActivity {
                     //img_location_data_type.setVisibility(View.VISIBLE);
                     layout_location_data_type.setVisibility(View.VISIBLE);
                     
-                    if(!currentLocation.computers.equals("")) {
+                    if(currentLocation.computers != null && !currentLocation.computers.equals("")) {
                         txt_location_data_computers.setText(currentLocation.computers);
                         img_location_data_computers.setImageResource(R.drawable.icon_computer);
                         layout_location_data_computers.setVisibility(View.VISIBLE);
                     }
-                    if(!currentLocation.workspace.equals("")) {
+                    if(currentLocation.workspace != null &&!currentLocation.workspace.equals("")) {
                         txt_location_data_workspaces.setText(currentLocation.workspace);
                         img_location_data_workspaces.setImageResource(R.drawable.icon_table);
                         layout_location_data_workspaces.setVisibility(View.VISIBLE);
                     }
-                    if(!currentLocation.food.equals("")) {
+                    if(currentLocation.food != null &&!currentLocation.food.equals("")) {
                         txt_location_data_food.setText(currentLocation.food);
                         img_location_data_food.setImageResource(R.drawable.icon_food);
                         layout_location_data_food.setVisibility(View.VISIBLE);

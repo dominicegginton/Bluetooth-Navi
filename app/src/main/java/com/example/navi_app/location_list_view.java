@@ -39,6 +39,15 @@ public class location_list_view extends BaseAdapter {
 
     }
 
+    public location_list_view(Context context, ArrayList<Location> locations, LocationSystem locationSystem) {
+        this.context = context;
+        this.inflater = LayoutInflater.from(context);
+
+        this.locations.addAll(locations);
+        this.arrayList.addAll(locations);
+        this.ls = locationSystem;
+    }
+
     public class ViewHolder {
         TextView txt_location_name, txt_location_level, txt_location_building;
     }
@@ -76,8 +85,8 @@ public class location_list_view extends BaseAdapter {
         }
         // Set the results into TextViews
         holder.txt_location_name.setText(locations.get(position).name);
-        holder.txt_location_level.setText(ls.getCurrentLevel(locations.get(position)).name);
-        holder.txt_location_building.setText(ls.getCurrentBuilding(locations.get(position)).name);
+        //holder.txt_location_level.setText(ls.getCurrentLevel(locations.get(position)).name);
+        //holder.txt_location_building.setText(ls.getCurrentBuilding(locations.get(position)).name);
         return view;
     }
 

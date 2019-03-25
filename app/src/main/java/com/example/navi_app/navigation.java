@@ -1,7 +1,6 @@
 package com.example.navi_app;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -11,22 +10,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.os.Handler;
-import android.os.TestLooperManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 
@@ -62,7 +57,7 @@ public class navigation extends AppCompatActivity implements SearchView.OnQueryT
         enableBluetooth();
 
         // INIT LocationSystem
-        this.ls = (LocationSystem) getIntent().getExtras().getSerializable("location_system");
+        this.ls = new LocationSystem(this);
 
         list_navi = (ListView) findViewById(R.id.list_navi);
         location_search_adapter = new location_list_view(this, ls);
@@ -71,6 +66,7 @@ public class navigation extends AppCompatActivity implements SearchView.OnQueryT
         search_navi.setOnQueryTextListener(this);
         progress_spinner = (ProgressBar) findViewById(R.id.progress_spinner);
         progress_spinner.setVisibility(View.GONE);
+
 
         list_navi.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override
@@ -88,18 +84,22 @@ public class navigation extends AppCompatActivity implements SearchView.OnQueryT
                     public void run() {
                         // Get current location object
                         Location currentLocation = ls.getCurrentLocation(scannedNodes);
-
                         // Check for null locations
                         if (currentLocation != null) {
                             Path myPath = ls.navigate(currentLocation, destination);
                             if(myPath != null) {
-                                Intent intent = new Intent(getBaseContext(), navigation_display.class);
-                                intent.putExtra("location_system", ls);
-                                intent.putExtra("path", myPath);
-                                // Open page
-                                startActivity(intent);
-                                progress_spinner.setVisibility(View.VISIBLE);
-                                list_navi.setVisibility(View.GONE);
+
+                                ArrayList<String> nodeStrings = new ArrayList<>();
+                                for (Node node: myPath.convertToArrayList()) {
+                                    nodeStrings.add(node.address);
+                                }
+
+                                ArrayAdapter<String> adapter = new ArrayAdapter<String>(navigation.this ,android.R.layout.simple_list_item_1, nodeStrings);
+                                list_navi.setAdapter(adapter);
+                                list_navi.setOnItemClickListener(null);
+
+                                progress_spinner.setVisibility(View.GONE);
+                                list_navi.setVisibility(View.VISIBLE);
                                 search_navi.setVisibility(View.GONE);
                             } else {
                                 // cant get navi path

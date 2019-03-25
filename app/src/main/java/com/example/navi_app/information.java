@@ -6,10 +6,14 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SearchView;
+
+import java.io.IOException;
 
 public class information extends AppCompatActivity implements SearchView.OnQueryTextListener{
 
@@ -27,14 +31,18 @@ public class information extends AppCompatActivity implements SearchView.OnQuery
         setContentView(R.layout.activity_information);
 
         // INIT LocationSystem
-        this.ls = (LocationSystem) getIntent().getExtras().getSerializable("location_system");
+        this.ls = new LocationSystem(this);
 
         // INIT UI
         list_information = (ListView) findViewById(R.id.list_information);
         search_information = (SearchView) findViewById(R.id.search_information);
-        location_information_adapter = new location_list_view(this, ls);
-        list_information.setAdapter(location_information_adapter);
         search_information.setOnQueryTextListener(this);
+
+        DatabaseHelp db = new DatabaseHelp(this);
+        location_information_adapter = new location_list_view(this, db.getLocations(), ls);
+
+
+        list_information.setAdapter(location_information_adapter);
 
         list_information.setOnItemClickListener(new AdapterView.OnItemClickListener(){
             @Override

@@ -3,6 +3,7 @@ package com.example.navi_app;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -89,17 +90,18 @@ public class information_display extends AppCompatActivity {
         }
         layout_location_data_type.setVisibility(View.VISIBLE);
 
-        if(!location_information.computers.equals("")) {
+        if(location_information.computers != null) {
             txt_location_data_computers.setText(location_information.computers);
             img_location_data_computers.setImageResource(R.drawable.icon_computer);
             layout_location_data_computers.setVisibility(View.VISIBLE);
         }
-        if(!location_information.workspace.equals("")) {
+        if(location_information.workspace != null) {
             txt_location_data_workspaces.setText(location_information.workspace);
             img_location_data_workspaces.setImageResource(R.drawable.icon_table);
             layout_location_data_workspaces.setVisibility(View.VISIBLE);
         }
-        if(!location_information.food.equals("")) {
+        if(location_information.food != null) {
+            Log.i("Info","xx");
             txt_location_data_food.setText(location_information.food);
             img_location_data_food.setImageResource(R.drawable.icon_food);
             layout_location_data_food.setVisibility(View.VISIBLE);
