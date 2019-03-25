@@ -128,30 +128,6 @@ public class DatabaseHelp extends SQLiteOpenHelper {
         return levels;
     }
 
-    // Need to del this one
-    public ArrayList<Location> getLocations() {
-        ArrayList<Location> locations = new ArrayList<>();
-        String selectQuery = "SELECT * FROM Locations";
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                Location newLocation = new Location();
-                newLocation.name = cursor.getString(cursor.getColumnIndex("Name"));
-                newLocation.type = cursor.getString(cursor.getColumnIndex("Type"));
-                newLocation.workspace = cursor.getString(cursor.getColumnIndex("Workspaces"));
-                newLocation.computers = cursor.getString(cursor.getColumnIndex("Computers"));
-                newLocation.food = cursor.getString(cursor.getColumnIndex("Food"));
-                locations.add(newLocation);
-            } while (cursor.moveToNext());
-        }
-
-        db.close();
-        return locations;
-
-    }
-
     public Location getLocation(Node searchNode) {
         String query = "SELECT * FROM Nodes WHERE Address = '" + searchNode.address + "'";
         SQLiteDatabase db = this.getWritableDatabase();

@@ -64,10 +64,10 @@ public class information_display extends AppCompatActivity {
         img_location_data_food = (ImageView) findViewById(R.id.img_location_data_food);
         txt_location_data_food = (TextView) findViewById(R.id.txt_location_data_food);
 
-        displayCurrentLocation();
+        displayCurrentLocation(location_information);
     }
 
-    private void displayCurrentLocation () {
+    private void displayCurrentLocation (Location location_information) {
 
         //txt_location_building.setText(ls.getCurrentBuilding(location_information).name);
         //txt_location_level.setText(ls.getCurrentLevel(location_information).name);
