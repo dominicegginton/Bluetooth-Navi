@@ -1,6 +1,8 @@
 package com.example.navi_app;
 
 import android.content.Context;
+import android.util.Log;
+
 import java.util.ArrayList;
 
 /**
@@ -33,6 +35,9 @@ public class Node implements Comparable<BLNode>{
         DatabaseHelp databaseHelper = new DatabaseHelp(context);
         // Get connections from database
         this.connections = databaseHelper.getConnections(address);
+
+        // Log
+        Log.v(TAG, "Node INIT");
     }
 
     /**
@@ -43,6 +48,9 @@ public class Node implements Comparable<BLNode>{
 
         // Set data
         this.address = address;
+
+        // Log
+        Log.v(TAG, "Node INIT");
 
     }
 
@@ -56,6 +64,9 @@ public class Node implements Comparable<BLNode>{
         // Set data
         this.address = address;
         this.connections = connections;
+
+        // Log
+        Log.v(TAG, "Node INIT");
 
     }
 

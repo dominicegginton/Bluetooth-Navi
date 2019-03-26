@@ -1,5 +1,7 @@
 package com.example.navi_app;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 
 /**
@@ -27,6 +29,9 @@ public class Path implements Comparable<Path> {
         this.destination = destination;
         this.totalWeight = 0;
 
+        // Log
+        Log.v(TAG, "Path INIT");
+
     }
 
     /**
@@ -42,6 +47,9 @@ public class Path implements Comparable<Path> {
 
         // Calculate and set total path weight
         this.totalWeight = previousPath.totalWeight + connection.weight;
+
+        // Log
+        Log.v(TAG, "Path INIT");
 
     }
 

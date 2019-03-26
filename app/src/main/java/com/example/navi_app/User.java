@@ -1,5 +1,7 @@
 package com.example.navi_app;
 
+import android.util.Log;
+
 import java.io.Serializable;
 
 /**
@@ -12,6 +14,8 @@ public class User implements Serializable {
     public String email;
     // User type
     public String type;
+    // Log TAG
+    private static final String TAG = "User";
 
     /**
      * INIT User
@@ -23,6 +27,9 @@ public class User implements Serializable {
         // Set data
         this.email = email;
         this.type = type;
+
+        // Log
+        Log.v(TAG, "User INIT");
 
     }
 }
