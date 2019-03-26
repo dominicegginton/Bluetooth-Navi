@@ -5,15 +5,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.util.Log;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.concurrent.ExecutionException;
 
 public class LocationSystem {
 
@@ -26,6 +19,62 @@ public class LocationSystem {
 
         DatabaseHelp databaseHelper = new DatabaseHelp(this.context);
         this.buildings = databaseHelper.getBuildings();
+    }
+
+    /**
+     *
+     * @param Origin Location of the start of the path
+     * @param Destination Location of the end of the path
+     * @return Path object containing the nodes to navigate from Origin to Destination
+     */
+    public Path getPath(Location Origin, Location Destination)
+    {
+
+        // Get Nodes for Origin and Destination Locations
+        Node OriginNode = Origin.nodes.get(0);
+        Node DestinationNode = Destination.nodes.get(0);
+
+        // Define new arraylist for the stack and visited nodes
+        ArrayList<Path> stack = new ArrayList<>();
+        ArrayList<String> visited = new ArrayList<>();
+
+        // Add a new Path to the OriginNode
+        stack.add(new Path(OriginNode));
+
+        // While the stack is not empty
+        while (!stack.isEmpty())
+        {
+            // Remove the smallest path from the stack and store as smallestPath
+            Path smallestPath = stack.remove(0);
+
+            // For each connection from the destination of the smallest path
+            for (Connection connection : smallestPath.destination.connections)
+            {
+
+                // If the connections neighbor nodes has not already been visited
+                if (!visited.contains(connection.getNeighbor().address)) {
+
+                    // Add a new Path to the connections nodes containing the current smallest path
+                    stack.add(new Path(connection, smallestPath));
+                    // Sort the arraylist of paths
+                    Collections.sort(stack);
+                }
+            }
+
+            // Add this smallests paths destination to the visited array
+            visited.add(smallestPath.destination.address);
+
+            // If the smallest path has reached the destination
+            if(smallestPath.destination.address.equals(DestinationNode.address))
+            {
+
+                // Return the smallest path
+                return smallestPath;
+            }
+        }
+
+        // Path was not found - return null
+        return null;
     }
 
     /**

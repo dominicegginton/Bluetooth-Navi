@@ -86,11 +86,13 @@ public class navigation extends AppCompatActivity implements SearchView.OnQueryT
                         Location currentLocation = ls.getCurrentLocation(scannedNodes);
                         // Check for null locations
                         if (currentLocation != null) {
-                            Path myPath = ls.navigate(currentLocation, destination);
-                            if(myPath != null) {
+
+                            Path navigationPath = ls.getPath(currentLocation, destination);
+
+                            if(navigationPath != null) {
 
                                 ArrayList<String> nodeStrings = new ArrayList<>();
-                                for (Node node: myPath.convertToArrayList()) {
+                                for (Node node: navigationPath.convertToArrayList()) {
                                     nodeStrings.add(node.address);
                                 }
 
