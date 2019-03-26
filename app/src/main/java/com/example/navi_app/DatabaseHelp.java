@@ -249,40 +249,89 @@ public class DatabaseHelp extends SQLiteOpenHelper {
         return connections;
     }
 
+    /**
+     * login
+     * login to the system by passing and email and password to this function, and if the login is successful then return a User object
+     * @param email login email
+     * @param password login password
+     * @return User object if the users login details are entered correctly, null if not
+     */
     public User login(String email, String password) {
+
+        // Create new string for sql search query
         String query = "SELECT * FROM Users Where Email = '" + email + "'";
+        // Get writable database
         SQLiteDatabase db = this.getWritableDatabase();
+        // Run query
         Cursor cursor = db.rawQuery(query, null);
 
+        // If the query did not return will null, move to first record
         if (cursor != null && cursor.moveToNext()) {
+
+            // Do while cursor can move to next record
             do {
+
+                // Get new users email from database record
                 String newUserEmail = cursor.getString(cursor.getColumnIndex("Email"));
+                // Get new users type from database record
                 String newUserType = cursor.getString(cursor.getColumnIndex("Type"));
+                // Get new users password from database record
                 String newUserPassword = cursor.getString(cursor.getColumnIndex("Password"));
 
+                // Check if login password equals the new password returned from the database
                 if(password.equals(newUserPassword)) {
+
+                    // Create new user
                     User newUser = new User(newUserEmail, newUserType);
+                    // Return new user
                     return newUser;
+
                 }
             } while (cursor.moveToNext());
+
         }
 
+        // Return null
         return null;
+
     }
 
+    /**
+     * registerUser
+     * refisterUser takes data about a new user and allows them to register by updating the database
+     * @param email new users email address
+     * @param password new users password
+     * @param type new user type
+     * @return if error will return false, if not true is returned
+     */
     public boolean registerUser(String email, String password, String type) {
+
+        // Try
         try {
+
+            // Get writable database
             SQLiteDatabase db = this.getWritableDatabase();
 
+            // Create new values object
             ContentValues values = new ContentValues();
+            // Add new users data to values object
             values.put("Email", email);
             values.put("Password", password);
             values.put("Type", type);
 
+            // Insert new record into users tables of database
             db.insert("Users", null, values);
+
+            // Close the database
             db.close();
+
+            // Return true
             return true;
-        }catch (SQLException e) {return false;}
+        } catch (SQLException e) {
+
+            // Return false
+            return false;
+        }
     }
 
     @Override
