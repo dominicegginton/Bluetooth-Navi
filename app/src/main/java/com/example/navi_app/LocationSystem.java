@@ -8,17 +8,35 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * LocationSystem
+ * LocationSystem object holds all data about the system and the buildings within it
+ */
 public class LocationSystem {
 
+    // Arraylist of buildings
     public ArrayList<Building> buildings;
+    // Log TAF
     private final String TAG = "LOCATION_SYSTEM";
+    // Context
     private Context context;
 
+    /**
+     * INIT LocationSystem
+     * @param context context
+     */
     public LocationSystem(Context context) {
+
+        // Set data
         this.context = context;
 
+        // Create new database helper object
         DatabaseHelp databaseHelper = new DatabaseHelp(this.context);
+        // Get buildings from database
         this.buildings = databaseHelper.getBuildings();
+
+        // Log
+        Log.v(TAG, "INIT LocationSystem");
     }
 
     /**
@@ -90,90 +108,139 @@ public class LocationSystem {
             // Define new list of node as system nodes <- nodes that belong to our location system
             ArrayList<BLNode> systemNodes = new ArrayList<>();
 
-
+            // For each BLNode in scannedNodes
             for (BLNode scannedNode: scannedNodes) {
+
+                // For each Building in this location system
                 for (Building building : this.buildings) {
+
+                    // For each level in building
                     for (Level level : building.levels) {
+
+                        // For each location in level
                         for (Location location : level.locations) {
+
+                            // For each node in location
                             for (Node node : location.nodes) {
 
-                                // If scanned node is in location system add it to the system nodes list
+                                // If scanned node is in location system
                                 if (scannedNode.address.equals(node.address)) {
-                                    systemNodes.add(scannedNode);
-                                }
 
+                                    // Add scanned node to system nodes
+                                    systemNodes.add(scannedNode);
+
+                                }
                             }
                         }
                     }
                 }
             }
 
-            // Sort BLNodes
             // Define new node as closest node <- '-10000' used as rssi as this will always be larger than real scanned nodes
             BLNode closestNode = new BLNode("", "", -10000);
+
+            // For each node in systemNodes
             for (BLNode node: systemNodes) {
 
                 // If node is closer than closest node assign closest node to it
                 if (node.rssi.intValue() > closestNode.rssi.intValue()) {
+
+                    // Set closestNode to node
                     closestNode = node;
+
                 }
 
             }
-            String output = String.valueOf(closestNode.name + " : " + closestNode.address + " : " + closestNode.rssi );
 
-            // Return the location object that the closest node belongs to
+            // For each building in this location system
             for (Building building : buildings) {
+
+                // For each level in building
                 for (Level level : building.levels) {
+
+                    // For each location in level
                     for (Location location : level.locations) {
+
+                        // For each node in location
                         for (Node node : location.nodes) {
 
-                            // If node address is the same as the closest node address return the location that the node belongs to
+                            // If node address is the same as the closest node address
                             if (node.address.equals(closestNode.address)) {
-                                return location;
-                            }
 
+                                // Return the location that the node belongs to
+                                return location;
+
+                            }
                         }
                     }
                 }
             }
 
         }
+
+        // Return null
         return null;
     }
 
+    /**
+     * getCurrentLevel
+     * search for the current level object based upon the users Location object
+     * @param currentLocation users current Lcoation object
+     * @return Level object that the user is on
+     */
     public Level getCurrentLevel(Location currentLocation){
 
-        // Search for level using location object
+        // For building in this location system
         for (Building building : buildings) {
+
+            // For level in buidling
             for (Level level : building.levels) {
+
+                // For location level
                 for (Location location : level.locations) {
 
-                    // If location is the same as current location return level
+                    // If location is the same as current location
                     if (location.id == currentLocation.id) {
+
+                        //return level
                         return level;
                     }
-
                 }
             }
         }
-        return null;
-    };
 
+        // Return null
+        return null;
+    }
+
+    /**
+     * getCurrentBuilding
+     * search for the current building object based upon the users Location object
+     * @param currentLocation users current Lcoation object
+     * @return Building object that the user is in
+     */
     public Building getCurrentBuilding(Location currentLocation) {
 
-        // Search for the building using location object
+        // For building in this location system
         for (Building building : buildings) {
+
+            // For level in buidling
             for (Level level : building.levels) {
+
+                // For location level
                 for (Location location : level.locations) {
 
-                    // If location is the same as current location return building
+                    // If location is the same as current location
                     if (location.id == currentLocation.id) {
+
+                        //return building
                         return building;
                     }
-
                 }
             }
         }
+
+        // Return null
         return null;
     }
 
@@ -217,7 +284,16 @@ public class LocationSystem {
         return null;
     }
 
+    /**
+     * alertBuilder
+     * @param context context
+     * @param alertTitle new alert title
+     * @param alertMessage new alert message
+     * @return AlertDialog with data already to called .show()
+     */
     public AlertDialog alertBuilder(Context context, String alertTitle, String alertMessage) {
+
+        // Create new alert dialog
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
         alertDialog.setTitle(alertTitle);
         alertDialog.setMessage(alertMessage);
@@ -231,6 +307,8 @@ public class LocationSystem {
             }
 
         });
+
+        // Return alertDialog
         return alertDialog;
     }
 }
