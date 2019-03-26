@@ -52,45 +52,50 @@ public class MainActivity extends AppCompatActivity {
 
     public void btn_login_Clicked(View view) {
 
+        // Get users email from UI
         String email = edit_email.getText().toString();
+        // Get users password from UI
         String password = edit_password.getText().toString();
 
+        // Create new database helper object
         DatabaseHelp databaseHelper = new DatabaseHelp(this);
 
+        // Login with the database and get User object
         User user = databaseHelper.login(email, password);
+
+        // Check is user object is null
         if (user != null) {
+
             // Create new intent to open new page
             Intent intent = new Intent(getBaseContext(), menu.class);
-            //intent.putExtra("location_system", newLS);
+
             // Open page
             startActivity(intent);
+
         } else {
 
+            // Create new alert
             AlertDialog alertDialog = new AlertDialog.Builder(MainActivity.this).create();
             alertDialog.setTitle("Login Error");
             alertDialog.setMessage("Sorry your login details did not work :(");
-            alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Try Again", new DialogInterface.OnClickListener() {
-
-                // Exit button on click event
-                public void onClick(DialogInterface dialog, int which) {
-                    // Exit this dialog
-                    dialog.dismiss();
-                    edit_email.getText().clear();
-                    edit_password.getText().clear();
-                }
-
-            });
             alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Register", new DialogInterface.OnClickListener() {
 
                 // Exit button on click event
                 public void onClick(DialogInterface dialog, int which) {
+
                     // Exit this dialog
                     dialog.dismiss();
+
+                    // Create new intent to open new page
                     Intent intent = new Intent(getBaseContext(), registration.class);
+
+                    // Open page
                     startActivity(intent);
+
                 }
 
             });
+
             // Show Alert Dialog
             alertDialog.show();
 
