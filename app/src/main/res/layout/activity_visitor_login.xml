@@ -15,7 +15,7 @@
         android:layout_marginTop="120dp"
         android:layout_marginEnd="8dp"
         android:layout_marginRight="8dp"
-        android:text="Staff Login"
+        android:text="Visitor Login"
         android:textAlignment="center"
         android:textColor="#101"
         android:textSize="34dp"
