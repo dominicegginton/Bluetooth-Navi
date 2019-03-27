@@ -6,6 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
+    <TextView
+        android:id="@+id/txt_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:text="Student Login"
+        android:textAlignment="center"
+        android:textColor="#101"
+        android:textSize="34dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/Img_logo"
         android:layout_width="104dp"
@@ -18,30 +37,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/txt_title"
-        android:layout_width="0dp"
-        android:layout_height="100dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="50dp"
-        android:layout_marginLeft="50dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginRight="50dp"
-        android:text="Login"
-        android:textAlignment="textStart"
-        android:textColor="#3F51B5"
-        android:textSize="34sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/Img_logo" />
-
-    <TextView
         android:id="@+id/txt_username"
         android:layout_width="151dp"
         android:layout_height="35dp"
         android:layout_marginStart="50dp"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="48dp"
         android:text="Username"
         android:textColor="#3F51B5"
         android:textSize="25sp"
@@ -63,11 +64,13 @@
 
     <EditText
         android:id="@+id/edit_email"
-        android:layout_width="160dp"
+        android:layout_width="0dp"
         android:layout_height="38dp"
         android:layout_marginStart="50dp"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
         android:autoLink="email"
         android:autofillHints=""
         android:clickable="true"
@@ -77,20 +80,24 @@
         android:hint="Email"
         android:inputType="textEmailAddress"
         android:linksClickable="true"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_username" />
 
     <EditText
         android:id="@+id/edit_password"
-        android:layout_width="157dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
         android:layout_marginLeft="50dp"
         android:layout_marginTop="8dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="Password"
         android:inputType="textPassword"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txt_confirm_password" />
 
@@ -100,7 +107,9 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="50dp"
         android:layout_marginLeft="50dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_marginBottom="50dp"
         android:background="#FFFFFF"
         android:clickable="true"
         android:ems="10"
@@ -108,8 +117,9 @@
         android:onClick="btn_register_Clicked"
         android:text="New? Register Here"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_login" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btn_login"
