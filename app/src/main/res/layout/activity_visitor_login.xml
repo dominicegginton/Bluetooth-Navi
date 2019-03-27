@@ -116,6 +116,7 @@
         android:ems="10"
         android:focusable="true"
         android:linksClickable="true"
+        android:onClick="btn_register_Clicked"
         android:text="New? Register Here"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -129,6 +130,7 @@
         android:layout_marginStart="70dp"
         android:layout_marginLeft="70dp"
         android:layout_marginTop="25dp"
+        android:onClick="btn_login_Clicked"
         android:text="Login"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_password" />
