@@ -1,7 +1,12 @@
 package com.example.navi_app;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -12,6 +17,9 @@ public class visitor_login extends AppCompatActivity {
     Button btn_login;
     EditText edit_email;
     EditText edit_password;
+
+    // Log TAG
+    private static final String TAG = "Visitor Login";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,4 +32,19 @@ public class visitor_login extends AppCompatActivity {
         edit_password = (EditText) findViewById(R.id.edit_password);
         edit_email = (EditText) findViewById(R.id.edit_email);
     }
+
+    public void btn_login_Clicked(View view) {
+
+        // Log
+        Log.e(TAG, "Login clicked");
+
+    }
+
+    public void btn_register_Clicked(View view) {
+
+        // Log
+        Log.e(TAG, "Register clicked");
+
+    }
+
 }
